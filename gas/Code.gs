@@ -11,7 +11,8 @@
 
 // ===== 設定（ここだけ書き換える） =====
 var CONFIG = {
-  NOTIFY_TO: "hayato.ogayu@gmail.com",       // 通知の送り先
+  NOTIFY_TO: "hayato.ogayu@gmail.com",       // 通知の送り先（自動返信の返信先と署名にも使う）
+  NOTIFY_ALSO: ["megu.gc01+hitorime@gmail.com"],   // 通知のほかの送り先。「+hitorime」で、受け取る側のフィルタやスマホの通知を絞り込める
   SENDER_NAME: "ひとりめマーケ 大萱生 隼人",   // 自動返信の差出人名
   SITE_URL: "https://hayato-ai.github.io/hitorime-marke/",
   DOC_URL: "",                                // サービス資料（PDF）の共有リンク。空の間は「資料は追ってお送りします」と書く
@@ -110,7 +111,7 @@ function notify_(kind, v) {
   }
   lines.push("", "送信元：" + v.page, "記録：" + book_().getUrl());
   MailApp.sendEmail({
-    to: CONFIG.NOTIFY_TO,
+    to: [CONFIG.NOTIFY_TO].concat(CONFIG.NOTIFY_ALSO).join(","),
     subject: "【ひとりめマーケ】" + label + "：" + v.company + " " + v.firstname + "様",
     body: lines.join("\n"),
     replyTo: v.email,

@@ -35,7 +35,7 @@ h += f'''
 
 # ---------- 2. サービスの特長（薄。#service） ----------
 FEATS = [
-    ("受注から逆算して、|施策を選ぶ", "法人営業の現場を知っているからこそ、リードの数より、受注につながるかを基準に施策を選びます。まずは過去の受注データから、狙うべき顧客を見極めます。"),
+    ("受注から逆算する設計を、|責任者として回してきた", "事業会社のBtoBマーケティング責任者として、リードの数ではなく受注を目標に置き、過去の受注データから狙う顧客を決め、施策と予算を配分してきました。この進め方を、そのまま貴社に持ち込みます。"),
     ("戦略で終わらず、|実行までやりきる", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。立てた戦略を、そのまま現場で形にします。"),
     ("立ち上げた後も、|回る体制を残す", "マーケティング部門を1人から6名体制に育てた経験をもとに、運用の手順書づくりや、担当者の採用・引き継ぎまで見据えて進めます。"),
 ]
@@ -67,7 +67,10 @@ PLANS = [
     dict(id=1, name="ひとりめ代行プラン", tag="基本のプラン",
          lead="戦略から実行まで、丸ごと任せたい",
          who="マーケティングの担当者がいない企業様",
-         does=["戦略と施策の設計", "施策の実行と改善", "営業との連携"],
+         lead_note="戦略を立てるだけでなく、施策の実行まで担当します。",
+         does=["現状の整理と、目標・KPIの設計", "戦略と、月ごとの施策計画の策定",
+               "施策の実行（広告運用、LP・資料・ホワイトペーパーの制作、メール配信、ウェビナー・展示会の運営）",
+               "効果測定と、毎週の改善", "インサイドセールス・営業への引き渡しの仕組みづくり", "毎週の定例とレポート"],
          price=(
              '<p class="plan-price plan-price--monitor">'
              '<span class="plan-price__old"><s>通常 月40万円</s></span> '
@@ -79,13 +82,16 @@ PLANS = [
     dict(id=2, name="ひとりめサポートプラン", tag=None,
          lead="社内の担当者を、支えてほしい",
          who="マーケティングの担当者が1人いる（兼任を含む）企業様",
-         does=["戦略と優先順位の決定", "計画と制作物のレビュー", "毎週の定例とご相談"],
+         does=["現状の整理と、目標・KPIの設計", "戦略と、施策の優先順位の決定", "施策計画と制作物（LP・資料・広告など）のレビュー",
+               "毎週の定例と、チャットでのご相談", "担当者の育成（進め方と判断の基準の共有）"],
          price='<p class="plan-price"><span class="plan-price__amt">月<span class="big">15</span>万円〜<span class="plan-price__tax">（税別）</span></span></p>\n'
                '              <p class="plan-price__sub">3か月〜</p>'),
     dict(id=3, name="施策代行プラン", tag=None,
          lead="必要な施策だけ、頼みたい",
          who="やりたい施策が決まっている企業様",
-         does=["LP制作", "コンテンツ制作（ホワイトペーパー・記事など）", "ウェビナーの企画・運営代行", "広告運用・集客", "展示会・イベントの集客"],
+         lead_note="各施策の設計から実行、振り返りまで担当します。",
+         does=["LP制作", "コンテンツ制作（ホワイトペーパー・記事など）", "営業資料・サービス資料の制作", "ウェビナーの企画・運営代行",
+               "広告運用・集客", "メール配信（ナーチャリング）", "展示会・イベントの集客"],
          does_label="対応できる施策",
          price='<p class="plan-price"><span class="plan-price__amt plan-price__amt--quote">お見積り</span></p>\n'
                '              <p class="plan-price__sub">施策ごと</p>'),
@@ -113,7 +119,9 @@ for p in PLANS:
           </div>'''
     plan_cards.append(f'''        <li class="card plan-card" id="plan-{p["id"]}">{tag}
           <h3>{p["name"]}</h3>
-          <p class="plan-card__lead">{p["lead"]}</p>
+          <div class="plan-card__head">
+            <p class="plan-card__lead">{p["lead"]}</p>{f'{chr(10)}            <p class="plan-card__note">{p["lead_note"]}</p>' if p.get("lead_note") else ""}
+          </div>
           <div class="plan-card__sec plan-card__for">
             <p class="k-label">こんな方におすすめ</p>
             <p>{p["who"]}</p>
@@ -146,8 +154,8 @@ h += f'''
 '''
 
 # ---------- 4. 担当者（薄） ----------
-# 左に写真、右に「肩書き（黄のタグ）→ 氏名 → 本文 → これまで取り組んできたこと（チェック3つ）→ 経歴（勤めてきた会社と役割の年表）」
-career_li = "\n".join(f'''            <li{' class="is-last"' if k == len(CAREER) - 1 else ""}><span class="career__when">{w}</span><span class="career__what">{t}</span></li>''' for k, (w, t) in enumerate(CAREER))
+# 左に写真、右に「肩書き（黄のタグ）→ 氏名 → 経歴の文章（勤めてきた会社と、責任者としての役割）→ これまで取り組んできたこと（チェック3つ）」
+career_p = "\n".join(f'          <p class="about__text">{t}</p>' for t in CAREER_PROSE)
 h += f'''
   <!-- 4. 担当者（背景：薄い青灰。左に写真、右に 肩書きのタグ・氏名・本文・これまで取り組んできたこと・経歴の流れ・ボタン） -->
   <section class="section section--alt" id="about" aria-labelledby="about-title">
@@ -160,13 +168,11 @@ h += f'''
         <div class="about__body reveal">
           {role_tag()}
           <p class="about__name">{NAME}</p>
-          <p class="about__text">{ABOUT_TEXT}</p>
+          <div class="about__career">
+{career_p}
+          </div>
           <h3 class="works-title">{WORKS_TITLE}</h3>
           {works_list()}
-          <h3 class="works-title">経歴</h3>
-          <ol class="career career--about">
-{career_li}
-          </ol>
         </div>
       </div>
     </div>

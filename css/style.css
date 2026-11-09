@@ -901,3 +901,9 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 @media (min-width: 768px) { .career--about li { grid-template-columns: 110px minmax(0, 1fr); gap: 16px; padding-bottom: 20px; } .career--about .career__when { font-size: 16px; } .career--about .career__what { font-size: 15px; } }
 /* 送信後の文が複数行のとき（無料相談）：2つ目以降の文は小さく、チェックは1つ目だけ */
 .lead-form__done > p + p { margin-top: 6px; font-size: 15px; font-weight: 700; }
+
+/* プランのひとことの下の補足（実行まで担当すること） */
+.plan-card__note { display: inline-block; margin-top: 8px; font-size: 14px; font-weight: 900; line-height: 1.7; color: var(--navy); background: var(--yellow-soft); border-radius: 6px; padding: 4px 10px; }
+/* 担当者の経歴（文章） */
+.about__career { display: grid; gap: 12px; }
+.about__career .about__text { margin: 0; }

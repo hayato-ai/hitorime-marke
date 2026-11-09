@@ -393,7 +393,7 @@ need("特長", S_SVC, [
 ])
 if TXT(re.search(r'<h2 class="sec-title" id="service-title">(.*?)</h2>', S_SVC, re.S).group(1)) != "元マーケティング責任者だからできる、3つのこと": print("[NG] 特長の見出し"); ok = False
 FEAT_EXP = [
-    ("受注から逆算して、施策を選ぶ", "法人営業の現場を知っているからこそ、リードの数より、受注につながるかを基準に施策を選びます。まずは過去の受注データから、狙うべき顧客を見極めます。"),
+    ("受注から逆算する設計を、責任者として回してきた", "事業会社のBtoBマーケティング責任者として、リードの数ではなく受注を目標に置き、過去の受注データから狙う顧客を決め、施策と予算を配分してきました。この進め方を、そのまま貴社に持ち込みます。"),
     ("戦略で終わらず、実行までやりきる", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。立てた戦略を、そのまま現場で形にします。"),
     ("立ち上げた後も、回る体制を残す", "マーケティング部門を1人から6名体制に育てた経験をもとに、運用の手順書づくりや、担当者の採用・引き継ぎまで見据えて進めます。"),
 ]
@@ -433,11 +433,12 @@ for i, (c_, lead, who) in enumerate([
     for old_ in ["主な成果物", "chips", "plan-card__desc", "plan-card__keep", "コース<"]:
         if old_ in c_: print(f"[NG] プラン{i}：v12 の「{old_}」が残っている"); ok = False
     dlist = re.search(r'<ul class="dot-list[^"]*">.*?</ul>', c_, re.S)
-    if not dlist or len(re.findall(r"<li>", dlist.group(0))) > (5 if i == 3 else 3): print(f"[NG] プラン{i}：担当すること（3つまで。施策代行は5つまで）"); ok = False
+    if not dlist or not (5 <= len(re.findall(r"<li>", dlist.group(0))) <= 7): print(f"[NG] プラン{i}：担当すること（5〜7項目）"); ok = False
     if i == 3 and re.search(r"\d+万円", c_): print("[NG] 施策代行プランに具体的な金額がある"); ok = False
 if '<span class="plan-card__tag">基本のプラン</span>' not in C1 or "plan-card__tag" in C2 or "plan-card__tag" in C3: print("[NG] 「基本のプラン」のタグは1枚目だけのはず"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["戦略と施策の設計", "施策の実行と改善", "営業との連携"]: print("[NG] 代行プランの担当すること"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["戦略と優先順位の決定", "計画と制作物のレビュー", "毎週の定例とご相談"]: print("[NG] サポートプランの担当すること"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["現状の整理と、目標・KPIの設計", "戦略と、月ごとの施策計画の策定", "施策の実行（広告運用、LP・資料・ホワイトペーパーの制作、メール配信、ウェビナー・展示会の運営）", "効果測定と、毎週の改善", "インサイドセールス・営業への引き渡しの仕組みづくり", "毎週の定例とレポート"]: print("[NG] 代行プランの担当すること"); ok = False
+if '<p class="plan-card__note">戦略を立てるだけでなく、施策の実行まで担当します。</p>' not in C1: print("[NG] 代行プランに「実行まで担当」の補足がない"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["現状の整理と、目標・KPIの設計", "戦略と、施策の優先順位の決定", "施策計画と制作物（LP・資料・広告など）のレビュー", "毎週の定例と、チャットでのご相談", "担当者の育成（進め方と判断の基準の共有）"]: print("[NG] サポートプランの担当すること"); ok = False
 need("代行プランの料金", C1, [
     '<span class="plan-price__old"><s>通常 月40万円</s></span>',
     '<span class="plan-price__off">先着3社 10万円OFF</span>',
@@ -451,7 +452,7 @@ if bottom(C1) != "料金 通常 月40万円 先着3社 10万円OFF モニター�
 if bottom(C2) != "料金 月15万円〜（税別） 3か月〜": print("[NG] サポートプランの料金と期間", bottom(C2)); ok = False
 if bottom(C3) != "料金 お見積り 施策ごと": print("[NG] 施策代行プランの料金と期間", bottom(C3)); ok = False
 MEASURES = [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C3, re.S).group(0))]
-if MEASURES != ["LP制作", "コンテンツ制作（ホワイトペーパー・記事など）", "ウェビナーの企画・運営代行", "広告運用・集客", "展示会・イベントの集客"]: print("[NG] 施策代行プランの対応できる施策", MEASURES); ok = False
+if MEASURES != ["LP制作", "コンテンツ制作（ホワイトペーパー・記事など）", "営業資料・サービス資料の制作", "ウェビナーの企画・運営代行", "広告運用・集客", "メール配信（ナーチャリング）", "展示会・イベントの集客"]: print("[NG] 施策代行プランの対応できる施策", MEASURES); ok = False
 # 注記（小さく、1行ずつ）→ CTAの行1つ
 NOTES = [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="plan-notes[^"]*">.*?</ul>', S_PLANS, re.S).group(0))]
 if NOTES != ["初期費用はかかりません。", "ひとりめ代行プランとひとりめサポートプランは、毎週ご報告します。", "広告費などの実費は含まれません。扱いはご相談のうえで決めます。"]: print("[NG] プランの下の注記", NOTES); ok = False
@@ -468,8 +469,7 @@ gone("プラン", S_PLANS, ["?plan=", "このプランで相談する", "コー�
 # 4. 担当者
 need("担当者", S_ABOUT, [
     '<p class="sec-label">代表</p>', '<span class="mark">担当者</span>について', '<p class="role-tag"><span>元マーケティング責任者（BtoB）</span></p>',
-    '<p class="about__name">大萱生 隼人</p>', '<h3 class="works-title">経歴</h3>', 'ペット業界で人材・経営支援を行う事業会社（従業員約300名）に入社。法人営業を担当',
-    '<p class="about__text">法人営業を経て、事業会社でBtoCとBtoBのマーケティングを担当してきました。社長直下でBtoBマーケティング部門を一人で立ち上げ、6名体制まで広げています。2026年に独立。</p>',
+    '<p class="about__name">大萱生 隼人</p>', '<div class="about__career">', 'ペット業界の人材・経営支援を行う事業会社（従業員約300名）に入社', '責任者として', '部門を6名体制に育てました', '2026年に独立。',
     '<h3 class="works-title">これまで取り組んできたこと</h3>',
     '<div class="ph ph--img ph--portrait ph--about">', 'src="img/profile.webp"', 'alt="大萱生 隼人の写真"',
 ])
@@ -478,16 +478,16 @@ WORKS_EXP = [("戦略と設計", "過去の受注データを分析して狙う�
              ("商談化と組織づくり", "インサイドセールスと連携して商談につなげる仕組みをつくり、マーケティング部門を1人から6名体制に育てました。")]
 works = [(TXT(a), TXT(b)) for a, b in re.findall(r"<li><strong>(.*?)</strong><span>(.*?)</span></li>", re.search(r'<ul class="check-list">.*?</ul>', S_ABOUT, re.S).group(0))]
 if works != WORKS_EXP: print("[NG] これまで取り組んできたこと（上流→下流の3つ。太字の見出し＋1文）", works); ok = False
-career = re.findall(r'<span class="career__when">(.*?)</span>', re.search(r'<ol class="career career--about">.*?</ol>', S_ABOUT, re.S).group(0))
-if career != ["2020年4月", "2021年4月", "2023年4月", "2026年"]: print("[NG] 担当者の経歴の年", career); ok = False
+career = re.findall(r'<p class="about__text">(.*?)</p>', re.search(r'<div class="about__career">.*?</div>', S_ABOUT, re.S).group(0))
+if len(career) != 4 or "career__when" in S_ABOUT: print("[NG] 担当者の経歴は文章4段落のはず（年表は無くした）", len(career)); ok = False
 for p_ in PAGES:
     if "profile.html" in RAW[p_] or "読み仮名" in RAW[p_] or "about__reading" in RAW[p_]: print(f"[NG] {p_}: プロフィールのページへのリンクか読み仮名が残っている"); ok = False
 if os.path.exists(OUT + "profile.html"): print("[NG] profile.html が残っている"); ok = False
 gone("担当者", S_ABOUT, ['class="pills"', "stat-card", "about-stats", "stat-note", "部門の人数", "月間リード", "展示会の集客", "※事業会社在籍時の実績です", "マーケティング経験5年以上", "担当。社長直下", "6名体制まで広げました"])
 for g_ in ["24件", "206件", "4,000", "8.5倍"]:
     if g_ in TXT(S_ABOUT): print(f"[NG] 担当者に細かい数字「{g_}」が残っている"); ok = False
-pos = [S_ABOUT.find(x) for x in ['class="role-tag"', 'class="about__name"', 'class="about__text"', 'class="works-title"', 'class="check-list"', 'class="career career--about"']]
-if pos != sorted(pos) or min(pos) < 0: print("[NG] 担当者の並びが「肩書き → 氏名 → 本文 → これまで取り組んできたこと → 経歴」でない", pos); ok = False
+pos = [S_ABOUT.find(x) for x in ['class="role-tag"', 'class="about__name"', 'class="about__career"', 'class="works-title"', 'class="check-list"']]
+if pos != sorted(pos) or min(pos) < 0: print("[NG] 担当者の並びが「肩書き → 氏名 → 経歴の文章 → これまで取り組んできたこと」でない", pos); ok = False
 if S_ABOUT.find('class="about__photo') > S_ABOUT.find('class="about__body'): print("[NG] 写真が左（DOM の先）でない"); ok = False
 
 # 途中のCTA（担当者の後：白地の行。v12 のまま）
