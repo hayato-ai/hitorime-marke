@@ -15,9 +15,10 @@ var CONFIG = {
   SENDER_NAME: "ひとりめマーケ 大萱生 隼人",   // 自動返信の差出人名
   SITE_URL: "https://hayato-ai.github.io/hitorime-marke/",
   DOC_URL: "",                                // サービス資料（PDF）の共有リンク。空の間は「資料は追ってお送りします」と書く
-  BOOKING_URL: "",                            // 予約ページのURL（自動返信に載せる）
+  BOOKING_URL: "https://calendar.app.google/9eAQ7uN3q36Fq3tw9",   // 予約ページのURL（自動返信に載せる）
   BOOKING_KEYWORD: "無料相談",                 // 予約スケジュールの名前に含まれる語。この語を含む予定をリマインドの対象にする
-  REMIND_HOURS_BEFORE: 24                     // 何時間前にリマインドするか
+  REMIND_HOURS_BEFORE: 24,                    // 何時間前にリマインドするか
+  SHEET_ID: "1tLQVbLVs-5uwaMjOQZO838lbLWKDgi7FeolzwxAEDQE"   // 記録先のスプレッドシートのID（URL の /d/ と /edit の間）。空ならスクリプトが紐づくスプレッドシート
 };
 
 var SHEETS = {
@@ -28,7 +29,7 @@ var SHEETS = {
 
 // ===== 初期設定（エディタで1回だけ実行する） =====
 function setup() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = CONFIG.SHEET_ID ? SpreadsheetApp.openById(CONFIG.SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
   PropertiesService.getScriptProperties().setProperty("SHEET_ID", ss.getId());
   Object.keys(SHEETS).forEach(function (k) { sheet_(ss, k); });
   var def = ss.getSheetByName("シート1");
@@ -238,7 +239,7 @@ function guests_(ev) {
 
 // ===== 共通 =====
 function book_() {
-  var id = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
+  var id = PropertiesService.getScriptProperties().getProperty("SHEET_ID") || CONFIG.SHEET_ID;
   return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActiveSpreadsheet();
 }
 
