@@ -18,7 +18,8 @@ NAME = "大萱生 隼人"
 # 読み仮名は本人が決める（brief_v13.md：残す【要記入】）。氏名のすぐ後ろに置く
 READING = '<span class="todo">【要記入：読み仮名】</span>'
 # 中身の無い mailto: リンクはやめ、【要記入】の span だけにする
-MAIL = '<span class="todo">【要記入：メールアドレス】</span>'
+MAIL_ADDR = "hayato.ogayu@gmail.com"
+MAIL = f'<a href="mailto:{MAIL_ADDR}">{MAIL_ADDR}</a>'
 
 SITE_TAG = "BtoBマーケティング支援"
 NAV_MIN = 1024   # ナビを横に出す幅（実測で決めた値。style.css・main.js・qa と合わせる）
@@ -285,6 +286,17 @@ def photo(d, reveal=True):
     return ph(d["code"], d["ratio_label"], d["ar"], d["subject"], d["comp"], d["cls"], reveal=reveal)
 
 
+# ---- 代表の写真（本人のスーツの写真。原寸 1086×1448）。枠の比率は P9／P9_ABOUT のまま、顔が切れないよう object-position で上寄せ ----
+def portrait(d, sizes, reveal=False):
+    style = f' style="--ar:{d['ar']}"' if d["ar"] else ""
+    rv = " reveal" if reveal else ""
+    return f'''<figure class="ph-fig{rv}">
+        <div class="ph ph--img ph--portrait {d['cls']}"{style}>
+          <img src="img/profile.webp" srcset="img/profile-600.jpg 600w, img/profile.webp 1086w" sizes="{sizes}" alt="{NAME}の写真" width="1086" height="1448" loading="lazy" decoding="async">
+        </div>
+      </figure>'''
+
+
 # ---- 複数ページで同文を使う部品 ----
 ROLE = "元マーケティング責任者（BtoB）"
 # index の担当者（v13 指示書の文面）
@@ -374,7 +386,7 @@ def lead_form(kind, pfx, submit_label, consult=False):
         _field(pfx, "company", "会社名", True, autocomplete="organization"),
         _field(pfx, "firstname", "お名前", True, autocomplete="name"),
         _field(pfx, "email", "メールアドレス", True, kind="email", autocomplete="email"),
-        _field(pfx, "phone", "電話番号", False, kind="tel", autocomplete="tel"),
+        _field(pfx, "phone", "電話番号", True, kind="tel", autocomplete="tel"),
     ]
     if consult:
         f.append(_field(pfx, "consult_type", "ご相談内容（選択）", False, kind="select", options=CONSULT_OPTIONS))
@@ -387,7 +399,6 @@ def lead_form(kind, pfx, submit_label, consult=False):
             <p class="field__err" id="{pfx}-privacy-err" hidden>{FORM_ERR}</p>
           </div>
           <button class="btn btn--block" type="submit"><span>{submit_label}</span><span class="btn__arrow" aria-hidden="true">{ARROW}</span></button>
-          <p class="lead-form__micro">入力は1分ほどで完了します。</p>
           <p class="lead-form__note" role="status" hidden>（設定前のため送信されません）</p>
           <div class="lead-form__fail" role="alert" hidden>
             <p>送信できませんでした。お手数ですが、次のメールアドレスへご連絡ください。</p>
@@ -396,7 +407,7 @@ def lead_form(kind, pfx, submit_label, consult=False):
           <noscript><p class="lead-form__note">このフォームの送信にはJavaScriptが必要です。</p></noscript>
         </form>
         <div class="lead-form__done" role="status" tabindex="-1" hidden>
-          <p>{'お申し込みありがとうございます。2営業日以内に、メールで日程の候補をお送りします。' if consult else 'お申し込みありがとうございます。1営業日以内に、メールで資料をお送りします。'}</p>
+          {'<p>お申し込みありがとうございます。</p><p class="lead-form__meet-lead" hidden>続けて、下のカレンダーからご都合のよい日時をお選びください。</p><div class="lead-form__meet" hidden></div><p class="lead-form__meet-fallback">2営業日以内に、メールで日程の候補をお送りします。</p>' if consult else '<p>お申し込みありがとうございます。1営業日以内に、メールで資料をお送りします。</p>'}
         </div>'''
 
 

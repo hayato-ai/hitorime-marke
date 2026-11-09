@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>サービス資料の請求｜ひとりめマーケ（BtoBマーケティング支援）</title>
-<meta name="description" content="サービスの内容、ご支援の進め方、料金をまとめた資料です。入力は1分ほどで完了します。">
+<meta name="description" content="サービスの内容、ご支援の進め方、料金をまとめた資料です。">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ひとりめマーケ">
 <meta property="og:title" content="サービス資料の請求｜ひとりめマーケ">
@@ -65,7 +65,7 @@
     <div class="container">
       <p class="sec-label">資料請求</p>
       <h1>サービス資料の請求</h1>
-      <p class="sec-lead">サービスの内容、ご支援の進め方、料金をまとめた資料です。入力は1分ほどで完了します。</p>
+      <p class="sec-lead">サービスの内容、ご支援の進め方、料金をまとめた資料です。</p>
     </div>
   </div>
 
@@ -91,8 +91,8 @@
             <p class="field__err" id="df-email-err" hidden>入力してください</p>
           </div>
           <div class="field" data-field="phone">
-            <label for="df-phone"><span class="field__name">電話番号</span><span class="opt">任意</span></label>
-            <input id="df-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="df-phone-err">
+            <label for="df-phone"><span class="field__name">電話番号</span><span class="req">必須</span></label>
+            <input id="df-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-required="true" aria-describedby="df-phone-err">
             <p class="field__err" id="df-phone-err" hidden>入力してください</p>
           </div>
           <div class="field field--check" data-field="privacy">
@@ -100,11 +100,10 @@
             <p class="field__err" id="df-privacy-err" hidden>入力してください</p>
           </div>
           <button class="btn btn--block" type="submit"><span>資料を受け取る</span><span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
-          <p class="lead-form__micro">入力は1分ほどで完了します。</p>
           <p class="lead-form__note" role="status" hidden>（設定前のため送信されません）</p>
           <div class="lead-form__fail" role="alert" hidden>
             <p>送信できませんでした。お手数ですが、次のメールアドレスへご連絡ください。</p>
-            <p><span class="todo">【要記入：メールアドレス】</span></p>
+            <p><a href="mailto:hayato.ogayu@gmail.com">hayato.ogayu@gmail.com</a></p>
           </div>
           <noscript><p class="lead-form__note">このフォームの送信にはJavaScriptが必要です。</p></noscript>
         </form>

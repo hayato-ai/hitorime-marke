@@ -20,17 +20,17 @@ try {
       await cdp.ev(`document.querySelectorAll('.reveal').forEach(e => e.classList.add('is-visible')); true`);
       const R = (s) => `document.querySelector('${t.root}').querySelector(${JSON.stringify(s)})`;
       // 0. 構造
-      const st = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; return { n: f.querySelectorAll('input,select,textarea').length, btn: f.querySelector('button[type=submit]').textContent.trim(), note: f.querySelector('.lead-form__note').hidden, fail: f.querySelector('.lead-form__fail').hidden, micro: f.querySelector('.lead-form__micro').textContent.trim(), link: f.querySelector('a[href="privacy.html"]') ? 1 : 0 }; })()`);
+      const st = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; return { n: f.querySelectorAll('input,select,textarea').length, btn: f.querySelector('button[type=submit]').textContent.trim(), note: f.querySelector('.lead-form__note').hidden, fail: f.querySelector('.lead-form__fail').hidden, link: f.querySelector('a[href="privacy.html"]') ? 1 : 0 }; })()`);
       if (st.btn !== t.label) NG(tag, 'ボタン文言', st.btn);
       if (!st.note || !st.fail) NG(tag, '最初から注記／失敗の文が出ている');
-      if (st.micro !== '入力は1分ほどで完了します。') NG(tag, 'micro', st.micro);
+      if (await cdp.ev(`!!${R('.lead-form__micro')}`)) NG(tag, '「入力は1分」の文が残っている');
       if (!st.link) NG(tag, 'プライバシーポリシーへのリンクがない');
       if (st.n !== (t.consult ? 7 : 5)) NG(tag, '入力欄の数', st.n);
       // 1. 空のまま送信 → 必須に「入力してください」、任意には出ない
       await cdp.ev(`${R('button[type=submit]')}.click(); true`);
       await sleep(150);
       const e1 = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const out = {}; for (const fd of f.querySelectorAll('.field')) { const e = fd.querySelector('.field__err'); const c = fd.querySelector('input,select,textarea'); const cs = getComputedStyle(e); out[fd.dataset.field] = { shown: !e.hidden && cs.display !== 'none', text: e.textContent.trim(), color: cs.color, weight: cs.fontWeight, inv: c.getAttribute('aria-invalid') }; } return { out, active: document.activeElement && document.activeElement.name, note: f.querySelector('.lead-form__note').hidden }; })()`);
-      for (const n of ['company', 'firstname', 'email']) {
+      for (const n of ['company', 'firstname', 'email', 'phone']) {
         const o = e1.out[n];
         if (!o.shown || o.text !== '入力してください') NG(tag, n, '必須の未入力のエラーが出ない', JSON.stringify(o));
         if (o.color !== NAVY || +o.weight < 700) NG(tag, n, 'エラーの色／太さが 紺・太字 でない', o.color, o.weight);
@@ -38,7 +38,6 @@ try {
         if (/⚠|!|！/.test(o.text)) NG(tag, n, '⚠／感嘆符');
       }
       if (!e1.out.privacy.shown || !e1.out.privacy.text) NG(tag, '同意のエラーが出ない');
-      if (e1.out.phone.shown) NG(tag, '任意の電話にエラーが出ている');
       if (t.consult && (e1.out.message.shown || e1.out.consult_type.shown)) NG(tag, '任意の項目にエラーが出ている');
       if (e1.active !== 'company') NG(tag, '最初の未入力の欄にフォーカスが移らない', e1.active);
       if (!e1.note) NG(tag, '検証エラーのときに「設定前」の注記が出ている');
@@ -80,13 +79,13 @@ try {
         if (t.consult && (fv.consult_type !== 'スポットプラン' || fv.message !== '相談です')) NG(tag, '相談の値', JSON.stringify(fv));
         if (!b.context || !b.legalConsentOptions) NG(tag, 'context／同意の情報がない');
       }
-      if (!e5.formHidden || !e5.doneShown || e5.doneText !== 'お申し込みありがとうございます。1営業日以内にメールでご連絡します。') NG(tag, '成功時の置き換え', JSON.stringify(e5));
-      // 5. 失敗（500）：エラー文＋メール（【要記入】）。ボタンが戻る。※ 別のページ読み込みで確認
+      if (!e5.formHidden || !e5.doneShown || !e5.doneText.startsWith(t.consult ? 'お申し込みありがとうございます。' : 'お申し込みありがとうございます。1営業日以内に、メールで資料をお送りします。')) NG(tag, '成功時の置き換え', JSON.stringify(e5));
+      // 5. 失敗（500）：エラー文＋メールアドレス。ボタンが戻る。※ 別のページ読み込みで確認
       await cdp.goto(SITE + t.page + '.html', 700);
       await cdp.ev(`document.querySelectorAll('.reveal').forEach(e => e.classList.add('is-visible')); true`);
-      await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const set = (n, v) => { const c = f.querySelector('[name=' + n + ']'); c.value = v; }; set('company', 'A'); set('firstname', 'B'); set('email', 'a@b.co'); f.querySelector('#${t.pfx}-privacy').checked = true; window.HUBSPOT_PORTAL_ID = '1'; window.HUBSPOT_FORM_DOWNLOAD = 'x'; window.HUBSPOT_FORM_CONSULT = 'y'; window.fetch = () => Promise.resolve({ ok: false, status: 500 }); f.querySelector('button[type=submit]').click(); })(); true`);
+      await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const set = (n, v) => { const c = f.querySelector('[name=' + n + ']'); c.value = v; }; set('company', 'A'); set('firstname', 'B'); set('email', 'a@b.co'); set('phone', '0312345678'); f.querySelector('#${t.pfx}-privacy').checked = true; window.HUBSPOT_PORTAL_ID = '1'; window.HUBSPOT_FORM_DOWNLOAD = 'x'; window.HUBSPOT_FORM_CONSULT = 'y'; window.fetch = () => Promise.resolve({ ok: false, status: 500 }); f.querySelector('button[type=submit]').click(); })(); true`);
       await sleep(400);
-      const e6 = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const x = f.querySelector('.lead-form__fail'); const b = f.querySelector('button[type=submit]'); return { shown: !x.hidden, hasMail: !!x.querySelector('.todo') && x.textContent.includes('【要記入：メールアドレス】'), text: x.querySelector('p').textContent.trim(), btnDisabled: b.disabled, label: b.textContent.trim(), formShown: !f.hidden }; })()`);
+      const e6 = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const x = f.querySelector('.lead-form__fail'); const b = f.querySelector('button[type=submit]'); return { shown: !x.hidden, hasMail: x.textContent.includes('hayato.ogayu@gmail.com'), text: x.querySelector('p').textContent.trim(), btnDisabled: b.disabled, label: b.textContent.trim(), formShown: !f.hidden }; })()`);
       if (!e6.shown || !e6.hasMail || e6.btnDisabled || !e6.formShown || e6.label !== t.label) NG(tag, '失敗時の表示', JSON.stringify(e6));
       // ネットワークエラー（reject）も同じ
       await cdp.ev(`(() => { const f = ${R('form.lead-form')}; f.querySelector('.lead-form__fail').hidden = true; window.fetch = () => Promise.reject(new Error('net')); f.querySelector('button[type=submit]').click(); })(); true`);

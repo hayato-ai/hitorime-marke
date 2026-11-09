@@ -95,8 +95,8 @@
             <p class="field__err" id="hf-email-err" hidden>入力してください</p>
           </div>
           <div class="field" data-field="phone">
-            <label for="hf-phone"><span class="field__name">電話番号</span><span class="opt">任意</span></label>
-            <input id="hf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="hf-phone-err">
+            <label for="hf-phone"><span class="field__name">電話番号</span><span class="req">必須</span></label>
+            <input id="hf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-required="true" aria-describedby="hf-phone-err">
             <p class="field__err" id="hf-phone-err" hidden>入力してください</p>
           </div>
           <div class="field field--check" data-field="privacy">
@@ -104,11 +104,10 @@
             <p class="field__err" id="hf-privacy-err" hidden>入力してください</p>
           </div>
           <button class="btn btn--block" type="submit"><span>資料を受け取る</span><span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
-          <p class="lead-form__micro">入力は1分ほどで完了します。</p>
           <p class="lead-form__note" role="status" hidden>（設定前のため送信されません）</p>
           <div class="lead-form__fail" role="alert" hidden>
             <p>送信できませんでした。お手数ですが、次のメールアドレスへご連絡ください。</p>
-            <p><span class="todo">【要記入：メールアドレス】</span></p>
+            <p><a href="mailto:hayato.ogayu@gmail.com">hayato.ogayu@gmail.com</a></p>
           </div>
           <noscript><p class="lead-form__note">このフォームの送信にはJavaScriptが必要です。</p></noscript>
         </form>
@@ -261,12 +260,9 @@
       <div class="about">
         <div class="about__photo reveal">
           <figure class="ph-fig">
-        <div class="ph ph--about" role="img" aria-label="写真プレースホルダー：本人のポートレート。背景は淡い青灰（#DCE8F2前後）のシームレス、紺ジャケット＋白シャツ、胸上、真顔から微笑み">
-          <span class="ph__tag">写真 4:5（スマホは8:5）</span>
-          <svg class="ph__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h3l1.6-2h6.8L17 8h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-          <p class="ph__subject">本人のポートレート。背景は淡い青灰（#DCE8F2前後）のシームレス、紺ジャケット＋白シャツ、胸上、真顔から微笑み</p>
+        <div class="ph ph--img ph--portrait ph--about">
+          <img src="img/profile.webp" srcset="img/profile-600.jpg 600w, img/profile.webp 1086w" sizes="(min-width: 960px) 400px, calc(100vw - 40px)" alt="大萱生 隼人の写真" width="1086" height="1448" loading="lazy" decoding="async">
         </div>
-        <figcaption>代表の写真（本人の写真に差し替えてください）</figcaption>
       </figure>
         </div>
         <div class="about__body reveal">

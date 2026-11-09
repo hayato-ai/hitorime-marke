@@ -158,7 +158,7 @@ h += f'''
       {sec_head("代表", '<span class="mark">担当者</span>について', "about-title")}
       <div class="about">
         <div class="about__photo reveal">
-          {photo(P9_ABOUT, reveal=False)}
+          {portrait(P9_ABOUT, "(min-width: 960px) 400px, calc(100vw - 40px)")}
         </div>
         <div class="about__body reveal">
           {role_tag()}

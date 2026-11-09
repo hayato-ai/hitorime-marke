@@ -7,6 +7,8 @@
 var HUBSPOT_PORTAL_ID = "";
 var HUBSPOT_FORM_DOWNLOAD = "";
 var HUBSPOT_FORM_CONSULT = "";
+/* 日程調整（HubSpot ミーティング）の予約ページのURL。入れると、無料相談の送信後にカレンダーを表示する */
+var HUBSPOT_MEETING_URL = "";
 
 (function () {
   "use strict";
@@ -144,6 +146,21 @@ var HUBSPOT_FORM_CONSULT = "";
       }).then(function () {
         form.hidden = true;
         if (done) {
+          var meetUrl = (window.HUBSPOT_MEETING_URL || "").trim();
+          var meet = done.querySelector(".lead-form__meet");
+          if (meet && meetUrl) {
+            var fd = new FormData(form);
+            var q = "embed=true&email=" + encodeURIComponent(fd.get("email") || "") + "&firstName=" + encodeURIComponent(fd.get("firstname") || "") + "&company=" + encodeURIComponent(fd.get("company") || "");
+            var ifr = document.createElement("iframe");
+            ifr.src = meetUrl + (meetUrl.indexOf("?") < 0 ? "?" : "&") + q;
+            ifr.title = "日程調整のカレンダー";
+            ifr.className = "lead-form__meet-frame";
+            ifr.loading = "lazy";
+            meet.appendChild(ifr);
+            meet.hidden = false;
+            var ml = done.querySelector(".lead-form__meet-lead"); if (ml) ml.hidden = false;
+            var fb = done.querySelector(".lead-form__meet-fallback"); if (fb) fb.hidden = true;
+          }
           done.hidden = false;
           done.focus();
         }

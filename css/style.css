@@ -881,3 +881,10 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 .check-list { gap: 14px; }
 /* 960〜1023px：FV の左の列が狭いので、2つのボタンが1行に収まるよう従ボタンの最小幅を詰める */
 @media (min-width: 960px) and (max-width: 1023px) { .hero .btn-row .btn--ghost { min-width: 216px; } }
+
+/* 無料相談の送信後に出す日程調整（HubSpot ミーティング）のカレンダー */
+.lead-form__meet { margin-top: 16px; }
+.lead-form__meet-frame { display: block; width: 100%; min-height: 680px; border: 0; border-radius: 12px; background: #fff; }
+
+/* 代表の写真：顔が切れないよう上寄せ（横長の 8:5 の枠でも頭から胸まで入る） */
+.ph--portrait img { object-position: 50% 14%; }

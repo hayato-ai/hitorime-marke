@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 
 export const SP = new URL('../qa_out', import.meta.url).pathname;
-export const SITE = 'http://127.0.0.1:8766/';  // python3 -m http.server 8766（scratchpad 直下）。./ と ./#id を実際の挙動で確かめるため file:// は使わない
+export const SITE = process.env.SITE || 'http://127.0.0.1:8780/';  // python3 -m http.server 8780 --directory <リポジトリ直下>。./ と ./#id を実際の挙動で確かめるため file:// は使わない
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
