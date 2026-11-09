@@ -16,6 +16,12 @@ try {
     await cdp.viewport(w, h, mobile, 1);
     for (const t of TARGETS) {
       const tag = `${t.page}@${w}`;
+      if (t.page === 'index' && w < 768) {
+        // スマホでは FV のフォームのカードを出さない
+        await cdp.goto(SITE + 'index.html', 700);
+        if (await cdp.ev(`getComputedStyle(document.querySelector('#hero-form')).display !== 'none'`)) NG(tag, 'スマホで FV のフォームが表示されている');
+        continue;
+      }
       await cdp.goto(SITE + t.page + '.html', 900);
       await cdp.ev(`document.querySelectorAll('.reveal').forEach(e => e.classList.add('is-visible')); window.FORM_ENDPOINT = ''; true`);
       const R = (s) => `document.querySelector('${t.root}').querySelector(${JSON.stringify(s)})`;
@@ -96,8 +102,16 @@ try {
       if (ov.bad.length) NG(tag, 'カードからはみ出す要素', ov.bad.join(' '));
       if (ov.small) NG(tag, '高さ44px未満の入力欄／ボタン', ov.small);
     }
-    // FV の「資料請求はこちら」→ #hero-form
+    // FV の「資料請求はこちら」→ スマホは download.html、それ以外は #hero-form
     await cdp.goto(SITE + 'index.html', 900);
+    if (w < 768) {
+      await cdp.ev(`document.querySelector('.hero .btn--ghost').click(); true`);
+      await sleep(1400);
+      const u = await cdp.ev('location.href');
+      if (!/download\.html$/.test(u)) NG(`index@${w}`, 'スマホで従ボタンが download.html へ移らない', u);
+      console.log(`@${w} done`);
+      continue;
+    }
     await cdp.ev(`document.querySelector('.hero .btn--ghost').click(); true`);
     await sleep(1400);
     const an = await cdp.ev(`(() => { const r = document.querySelector('#hero-form').getBoundingClientRect(); const hdr = document.querySelector('.site-header').getBoundingClientRect(); return { hash: location.hash, top: Math.round(r.top), hdrB: Math.round(hdr.bottom), vh: innerHeight, bottom: Math.round(r.bottom) }; })()`);

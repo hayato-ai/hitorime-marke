@@ -372,10 +372,9 @@ if [TXT(x) for x in re.findall(r"<li[^>]*>(.*?)</li>", re.search(r'<ul class="pi
 gone("FV", S_HERO, ["hero__monitor", "mon-tag", "hero__micro", "60分", "オンライン", "お見積りまで無料", "マーケティング経験5年以上", "社長直下で部門を一人で立ち上げ", "6名体制まで拡大", "モニター募集中", "hero__lead", "ph--hero", "<img", "Googleフォーム"])
 if "【要記入" in S_HERO: print("[NG] FV に【要記入】が残っている"); ok = False
 # 並び：ピル → 吹き出し → ボタン。吹き出しは主ボタンのすぐ上
-pos = [S_HERO.find(x) for x in ['<ul class="pills">', 'class="key-facts"', 'class="bubble"', 'class="btn-row"', 'id="hero-form"']]
-if pos != sorted(pos) or min(pos) < 0: print("[NG] FV の並びが「ピル → 要点カード → 吹き出し → ボタン → フォームのカード」でない", pos); ok = False
-KF = [(TXT(a), TXT(b)) for a, b in re.findall(r'<li><span class="key-facts__k">(.*?)</span><span class="key-facts__v">(.*?)</span></li>', S_HERO)]
-if KF != [("初期費用", "0円"), ("ご相談から開始まで", "最短1〜2週間"), ("モニター価格", "先着3社")]: print("[NG] FV の要点カード3つ", KF); ok = False
+pos = [S_HERO.find(x) for x in ['<ul class="pills">', 'class="bubble"', 'class="btn-row"', 'id="hero-form"']]
+if pos != sorted(pos) or min(pos) < 0: print("[NG] FV の並びが「ピル → 吹き出し → ボタン → フォームのカード」でない", pos); ok = False
+if "key-facts" in S_HERO or "初期費用" in S_HERO: print("[NG] FV に要点カードが残っている"); ok = False
 if re.findall(r'<a class="btn[^"]*" href="([^"]+)"', re.search(r'<div class="btn-row">.*?</div>', S_HERO, re.S).group(0)) != ["contact.html", "#hero-form"]: print("[NG] FV のボタンのリンクが「contact.html／#hero-form」でない"); ok = False
 # FV のフォームのカード（資料請求）
 HF = section(S_HERO, r'<div class="form-card hero-form" id="hero-form".*?</form>')
@@ -385,7 +384,7 @@ for nm_, lb_, rq_ in [("company", "会社名", True), ("firstname", "お名前",
 if 'name="privacy" type="checkbox" required' not in HF: print("[NG] FV のフォーム：同意のチェック（必須）"); ok = False
 if len(re.findall(r'<button class="btn btn--block" type="submit">', HF)) != 1: print("[NG] FV のフォームの送信ボタン"); ok = False
 if not re.search(r'<p class="bubble"><span>[^<]*</span></p>\s*<div class="btn-row">\s*<a class="btn" href="contact.html">', S_HERO): print("[NG] FV：吹き出しが主ボタンのすぐ上でない"); ok = False
-if S_HERO.count('class="bubble"') != 1 or S_HERO.count("モニター") != 2: print("[NG] FV のモニター表示が 吹き出し＋要点カード の2か所だけでない", S_HERO.count("モニター")); ok = False
+if S_HERO.count('class="bubble"') != 1 or S_HERO.count("モニター") != 1: print("[NG] FV のモニター表示が吹き出しの1か所だけでない", S_HERO.count("モニター")); ok = False
 
 # 2. サービスの特長
 need("特長", S_SVC, [
@@ -555,7 +554,7 @@ if len(re.findall(r'<p class="bubble"><span>＼ 先着3社 モニター価格 �
 # モニターの表示：FV の吹き出し・プランの代行の料金とCTAの吹き出し・途中と最後のCTAの吹き出しだけ
 mon = {k: v.count("モニター") for k, v in {"FV": S_HERO, "特長": S_SVC, "プラン": S_PLANS, "担当者": S_ABOUT, "途中のCTA": S_ROW, "流れ": S_FLOW, "FAQ": S_FAQ, "最後のCTA": S_CTA}.items()}
 print("モニターの出現箇所:", mon)
-if mon != {"FV": 2, "特長": 0, "プラン": 2, "担当者": 0, "途中のCTA": 1, "流れ": 0, "FAQ": 0, "最後のCTA": 1}: print("[NG] モニターの表示が想定の箇所（FV・代行の料金とプランのCTA・途中・最後のCTA）だけになっていない"); ok = False
+if mon != {"FV": 1, "特長": 0, "プラン": 2, "担当者": 0, "途中のCTA": 1, "流れ": 0, "FAQ": 0, "最後のCTA": 1}: print("[NG] モニターの表示が想定の箇所（FV・代行の料金とプランのCTA・途中・最後のCTA）だけになっていない"); ok = False
 if "モニター" in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head にモニターがある"); ok = False
 if "、施策代行プランからお選びいただけます" not in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head（description）に3つのプランがない"); ok = False
 

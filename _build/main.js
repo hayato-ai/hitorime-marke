@@ -50,9 +50,24 @@
     for (var k = 0; k < rows.length; k++) bio.observe(rows[k]);
   }
 
+  // FV の「資料請求はこちら」（#hero-form）：スマホではフォームのカードを出さないので、資料請求のページへ移る
+  function initHeroFormLink() {
+    var links = document.querySelectorAll('a[href="#hero-form"]');
+    for (var i = 0; i < links.length; i++) {
+      links[i].addEventListener("click", function (e) {
+        var f = document.getElementById("hero-form");
+        if (f && window.getComputedStyle(f).display === "none") {
+          e.preventDefault();
+          window.location.href = "download.html";
+        }
+      });
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initReveal();
     initBar();
+    initHeroFormLink();
     // ここまで正常に動いた：<head> の保険タイマー（4秒後に js クラスを外して全部表示する）を解除する
     if (window.__revealTimer) window.clearTimeout(window.__revealTimer);
   });

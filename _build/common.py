@@ -347,16 +347,6 @@ def works_list(cls=""):
 
 
 # ---- FV の要点カード3つ（v14：白地・紺2px枠・角丸、横並び） ----
-KEY_FACTS = [("初期費用", "0円"), ("ご相談から開始まで", "最短1〜2週間"), ("モニター価格", "先着3社")]
-
-
-def key_facts():
-    items = "\n".join(f'              <li><span class="key-facts__k">{k}</span><span class="key-facts__v">{v}</span></li>' for k, v in KEY_FACTS)
-    return f'''<ul class="key-facts">
-{items}
-            </ul>'''
-
-
 # ---- 自前のフォーム（js/forms.js が検証して Google Apps Script（gas/Code.gs）に POST する。設定が空のときは送信せず注記を出す） ----
 CONSULT_OPTIONS = ["ひとりめ代行プラン", "ひとりめサポートプラン", "施策代行プラン", "まだ決まっていない"]
 FORM_ERR = "入力してください"

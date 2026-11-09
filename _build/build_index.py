@@ -15,14 +15,13 @@ h = head(TITLE, DESC, OG_TITLE, DESC, images=True, forms=True) + header("index")
 
 # ---------- 1. FV（白） ----------
 h += f'''
-  <!-- 1. ファーストビュー（v14：左にラベル・H1・ピル2つ・要点カード3つ・主ボタン（上に吹き出し）と従ボタン、右（スマホは下）に資料請求フォームのカード。写真は無し。従ボタンは同じページのフォーム #hero-form へ） -->
+  <!-- 1. ファーストビュー（v14：左にラベル・H1・ピル3つ・主ボタン（上に吹き出し）と従ボタン、右（タブレットは下、スマホは非表示）に資料請求フォームのカード。写真は無し。従ボタンは同じページのフォーム #hero-form へ） -->
   <section class="hero" aria-labelledby="hero-title">
     <div class="container hero__grid">
       <div class="hero__text">
         <p class="sec-label">BtoBマーケティング支援・代行</p>
         <h1 id="hero-title"><span class="phrase"><span class="mark">元マーケティング責任者</span>が、</span><span class="phrase">戦略から実行まで担当します</span></h1>
         {pills()}
-        {key_facts()}
         {cta_set(doc_href="#hero-form")}
       </div>
       <div class="form-card hero-form" id="hero-form" tabindex="-1" aria-labelledby="hero-form-title">

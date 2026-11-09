@@ -907,3 +907,7 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 /* 担当者の経歴（文章） */
 .about__career { display: grid; gap: 12px; }
 .about__career .about__text { margin: 0; }
+
+/* FV：要点カードを無くしたので、ピルの下にボタン。スマホ（767px以下）では資料請求フォームのカードを出さない（従ボタンは download.html へ） */
+.hero .pills + .cta-set { margin-top: 28px; }
+@media (max-width: 767px) { .hero-form { display: none; } }
