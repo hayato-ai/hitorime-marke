@@ -19,8 +19,9 @@ h += f'''
   <section class="hero" aria-labelledby="hero-title">
     <div class="container hero__grid">
       <div class="hero__text">
-        <p class="sec-label">商談を増やしたいBtoB企業のマーケティング支援・代行</p>
-        <h1 id="hero-title"><span class="phrase"><span class="mark">元マーケティング責任者</span>が、</span><span class="phrase">戦略から実行まで担当します</span></h1>
+        <p class="sec-label">BtoBマーケティング支援・代行</p>
+        <h1 id="hero-title"><span class="phrase">商談が足りないBtoB企業の、</span><span class="phrase"><span class="mark">一人目のマーケター</span>に</span><span class="phrase">なります</span></h1>
+        <p class="hero__sub">元マーケティング責任者が、戦略から実行まで担当します。</p>
         {pills()}
         {cta_set(doc_href="#hero-form")}
       </div>
@@ -53,9 +54,9 @@ h += f'''
         <p class="problem-answer__title"><span class="phrase">そのお悩み、</span><span class="phrase"><span class="mark">ひとりめマーケ</span>が解決します</span></p>
         <p class="problem-answer__text">ひとりめマーケは、貴社の「一人目のマーケター」として社内に入り、戦略づくりから施策の実行まで担当します。担当者がいない企業様も、担当者がいて手が回らない企業様も、すぐに動き出せます。</p>
         <ul class="problem-answer__points">
-          <li><span class="num">01</span>責任者の目線で決める</li>
-          <li><span class="num">02</span>実行までやりきる</li>
-          <li><span class="num">03</span>回る体制を残す</li>
+          <li><span class="num">01</span>施策を絞れる</li>
+          <li><span class="num">02</span>施策が回る</li>
+          <li><span class="num">03</span>ノウハウが残る</li>
         </ul>
         <p class="problem-answer__more"><a href="#service">3つの特長を見る</a></p>
       </div>
@@ -65,9 +66,9 @@ h += f'''
 
 # ---------- 2. サービスの特長（薄。#service） ----------
 FEATS = [
-    ("責任者として、|戦略から予算まで決めてきた", "BtoBマーケティングの責任者として、狙う顧客、KPI、予算の配分までを自ら決めてきました。担当者ではなく、事業を任された立場で施策を考えます。"),
-    ("戦略で終わらず、|実行までやりきる", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。立てた戦略を、そのまま現場で形にします。"),
-    ("立ち上げた後も、|回る体制を残す", "マーケティング部門を1人から6名体制に育てた経験をもとに、運用の手順書づくりや、担当者の採用・引き継ぎまで見据えて進めます。"),
+    ("商談につながる施策に、|絞れる", "BtoBマーケティングの責任者として、狙う顧客、KPI、予算の配分までを決めてきました。その経験をもとに、商談につながる施策を見極め、限られた予算と時間を集中させます。"),
+    ("手が足りなくても、|施策が回る", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。戦略だけでなく実行まで担当するので、社内の人手が足りなくても施策が止まりません。"),
+    ("社内に、|ノウハウが残る", "マーケティング部門を1人から6名体制に育てた経験をもとに、進め方や判断の基準を手順書にして残します。担当者の採用や引き継ぎまで見据えて進めます。"),
 ]
 feat_cards = "\n".join(f'''        <li class="card feat-card">
           <span class="num-xl" aria-hidden="true">{i:02d}</span>
@@ -79,7 +80,7 @@ h += f'''
   <section class="section section--alt" id="service" aria-labelledby="service-title">
     <div class="container">
       <div class="svc-intro">
-        {sec_head("サービスの特長", '<span class="phrase"><span class="mark">元マーケティング責任者</span></span><span class="phrase">だからできる、</span><span class="phrase">3つのこと</span>', "service-title")}
+        {sec_head("サービスの特長", '<span class="phrase">ひとりめマーケで</span><span class="phrase"><span class="mark">解決できる</span>、</span><span class="phrase">3つのこと</span>', "service-title")}
         {unsplash(**IMG_SERVICE)}
       </div>
       <ol class="feat-grid reveal">

@@ -354,7 +354,7 @@ S_CTA = section(idx_body, r'<section class="cta-band".*?</section>')
 import html as _html
 TXT = lambda t: re.sub(r"\s+", " ", _html.unescape(re.sub(r"<[^>]+>", "", t))).strip()   # タグを外して空白を詰めた可視テキスト
 BUBBLE_HTML = '<p class="bubble"><span>＼ 先着3社 モニター価格 月30万円 ／</span></p>'
-PILLS3 = ["BtoBマーケ部門をゼロから構築", "戦略から施策の実行まで担当", "施策の実行だけのご依頼もOK"]
+PILLS3 = ["担当者ゼロからの立ち上げ", "止まっている施策の立て直し", "施策の実行だけのご依頼もOK"]
 
 print("\n--- v13 指示書：index（文面はそのまま） ---")
 # 共通：メタ（v11 のまま）
@@ -364,8 +364,8 @@ need("index meta", idx, [
 ])
 # 1. FV
 need("FV", S_HERO, [
-    '<p class="sec-label">商談を増やしたいBtoB企業のマーケティング支援・代行</p>',
-    '<h1 id="hero-title"><span class="phrase"><span class="mark">元マーケティング責任者</span>が、</span><span class="phrase">戦略から実行まで担当します</span></h1>',
+    '<p class="sec-label">BtoBマーケティング支援・代行</p>',
+    '<h1 id="hero-title"><span class="phrase">商談が足りないBtoB企業の、</span><span class="phrase"><span class="mark">一人目のマーケター</span>に</span><span class="phrase">なります</span></h1>', '<p class="hero__sub">元マーケティング責任者が、戦略から実行まで担当します。</p>',
     BUBBLE_HTML, "<span>まずは無料で相談する</span>", "<span>資料請求はこちら</span>",
 ])
 if [TXT(x) for x in re.findall(r"<li[^>]*>(.*?)</li>", re.search(r'<ul class="pills">.*?</ul>', S_HERO, re.S).group(0))] != PILLS3: print("[NG] FV のピルが指示書の3つでない"); ok = False
@@ -388,17 +388,17 @@ if S_HERO.count('class="bubble"') != 1 or S_HERO.count("モニター") != 1: pri
 
 # 2. サービスの特長
 need("特長", S_SVC, [
-    '<p class="sec-label">サービスの特長</p>', 'id="service-title"', '<span class="mark">元マーケティング責任者</span>', '<img ', 'class="svc-intro"',
+    '<p class="sec-label">サービスの特長</p>', 'id="service-title"', '<span class="mark">解決できる</span>', '<img ', 'class="svc-intro"',
 ])
-if TXT(re.search(r'<h2 class="sec-title" id="service-title">(.*?)</h2>', S_SVC, re.S).group(1)) != "元マーケティング責任者だからできる、3つのこと": print("[NG] 特長の見出し"); ok = False
+if TXT(re.search(r'<h2 class="sec-title" id="service-title">(.*?)</h2>', S_SVC, re.S).group(1)) != "ひとりめマーケで解決できる、3つのこと": print("[NG] 特長の見出し"); ok = False
 FEAT_EXP = [
-    ("責任者として、戦略から予算まで決めてきた", "BtoBマーケティングの責任者として、狙う顧客、KPI、予算の配分までを自ら決めてきました。担当者ではなく、事業を任された立場で施策を考えます。"),
-    ("戦略で終わらず、実行までやりきる", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。立てた戦略を、そのまま現場で形にします。"),
-    ("立ち上げた後も、回る体制を残す", "マーケティング部門を1人から6名体制に育てた経験をもとに、運用の手順書づくりや、担当者の採用・引き継ぎまで見据えて進めます。"),
+    ("商談につながる施策に、絞れる", "BtoBマーケティングの責任者として、狙う顧客、KPI、予算の配分までを決めてきました。その経験をもとに、商談につながる施策を見極め、限られた予算と時間を集中させます。"),
+    ("手が足りなくても、施策が回る", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。戦略だけでなく実行まで担当するので、社内の人手が足りなくても施策が止まりません。"),
+    ("社内に、ノウハウが残る", "マーケティング部門を1人から6名体制に育てた経験をもとに、進め方や判断の基準を手順書にして残します。担当者の採用や引き継ぎまで見据えて進めます。"),
 ]
 feats = [(TXT(a), TXT(b)) for a, b in re.findall(r'<li class="card feat-card">.*?<h3>(.*?)</h3>\s*<p>(.*?)</p>', S_SVC, re.S)]
 if feats != FEAT_EXP: print("[NG] 特長3つの見出し・本文が指示書と違う", feats); ok = False
-gone("特長", S_SVC, ["<table", "cmp", "svc-close", "sec-lead", "代表が直接", "担当者が途中で変わる", "一気通貫", "ノウハウが残る", "3つの特長"])
+gone("特長", S_SVC, ["<table", "cmp", "svc-close", "sec-lead", "代表が直接", "担当者が途中で変わる", "一気通貫", "3つの特長"])
 if len(re.findall(r'class="card feat-card"', S_SVC)) != 3: print("[NG] 特長が3つでない"); ok = False
 if [m for m in re.findall(r'<span class="num-xl" aria-hidden="true">(\d+)</span>', S_SVC)] != ["01", "02", "03"]: print("[NG] 特長の番号が01〜03でない"); ok = False
 

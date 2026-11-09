@@ -940,3 +940,7 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 .problem-answer__points .num { font-family: var(--font-num); font-style: italic; font-size: 15px; color: var(--navy); background: var(--yellow); border-radius: 999px; padding: 1px 8px; }
 .problem-answer__more { margin-top: 16px; font-size: 14px; font-weight: 700; }
 .problem-answer__more a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+
+/* FV：見出しの下の補足（誰が担当するか）。見出しは相手の課題、肩書きはここに下げる */
+.hero__sub { margin-top: 14px; font-size: 16px; font-weight: 700; line-height: 1.7; color: var(--navy); }
+@media (min-width: 768px) { .hero__sub { font-size: 17px; } }
