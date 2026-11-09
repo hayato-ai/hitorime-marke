@@ -364,7 +364,7 @@ need("index meta", idx, [
 ])
 # 1. FV
 need("FV", S_HERO, [
-    '<p class="sec-label">BtoBマーケティング支援・代行</p>',
+    '<p class="sec-label">商談を増やしたいBtoB企業のマーケティング支援・代行</p>',
     '<h1 id="hero-title"><span class="phrase"><span class="mark">元マーケティング責任者</span>が、</span><span class="phrase">戦略から実行まで担当します</span></h1>',
     BUBBLE_HTML, "<span>まずは無料で相談する</span>", "<span>資料請求はこちら</span>",
 ])
@@ -591,7 +591,7 @@ if not m_svc or "sec-head" not in m_svc.group(1) or "<img" not in m_svc.group(1)
 # index の面の並び：FV（白）→ サービスの特長（薄）→ プラン（白）→ 担当者（薄）→ 途中のCTA（白の行）→ 流れ（白）→ FAQ（白）→ 最後のCTA（紺）。紺は最後の1つだけ
 seq = re.findall(r'<(section|div) class="((?:section|cta-band|cta-row|hero(?!__)|page-head|back-top)[^"]*)"[^>]*?(?: id="([^"]*)")?', idx)
 def is_navy(c): return "section--navy" in c or "cta-band" in c
-def tone(c): return "紺" if is_navy(c) else ("薄" if "section--alt" in c else "白")
+def tone(c): return "紺" if is_navy(c) else ("黄" if "section--problems" in c else ("薄" if "section--alt" in c else "白"))
 prev = False
 for tag, c, _ in seq:
     n = is_navy(c)
@@ -599,7 +599,8 @@ for tag, c, _ in seq:
     prev = n
 order = " → ".join(tone(c) for _, c, _ in seq)
 print("index の面の並び:", order)
-if order != "白 → 薄 → 白 → 薄 → 白 → 白 → 白 → 紺": print("[NG] 面の並びが想定と違う"); ok = False
+need("お悩み", idx_body, ['id="problems"', 'こんな<span class="mark">お悩み</span>はありませんか？', '<li>商談の数が足りない</li>', '<li>担当者はいるが、施策を動かしきれていない</li>', '貴社の「一人目のマーケター」として社内に入り', '<a href="#service">3つの特長を見る</a>'])
+if order != "白 → 黄 → 薄 → 白 → 薄 → 白 → 白 → 白 → 紺": print("[NG] 面の並びが想定と違う"); ok = False
 ids_order = [i for i in re.findall(r'<section[^>]*? id="([^"]+)"', idx) if i in ("service", "plans", "about", "flow", "price", "faq")]
 print("index のセクション順:", ids_order)
 if ids_order != ["service", "plans", "about", "flow", "faq"]: print("[NG] セクションの順が想定と違う（料金は削除）"); ok = False

@@ -19,7 +19,7 @@ h += f'''
   <section class="hero" aria-labelledby="hero-title">
     <div class="container hero__grid">
       <div class="hero__text">
-        <p class="sec-label">BtoBマーケティング支援・代行</p>
+        <p class="sec-label">商談を増やしたいBtoB企業のマーケティング支援・代行</p>
         <h1 id="hero-title"><span class="phrase"><span class="mark">元マーケティング責任者</span>が、</span><span class="phrase">戦略から実行まで担当します</span></h1>
         {pills()}
         {cta_set(doc_href="#hero-form")}
@@ -27,6 +27,37 @@ h += f'''
       <div class="form-card hero-form" id="hero-form" tabindex="-1" aria-labelledby="hero-form-title">
         <h2 class="form-card__title" id="hero-form-title">サービス資料はこちら（無料）</h2>
         {lead_form("download", "hf", "資料を受け取る")}
+      </div>
+    </div>
+  </section>
+'''
+
+# ---------- 1.5 お悩み（薄い黄。#problems）：誰のどんな課題か → サービス名の意味（一人目のマーケター）→ 特長へつなぐ ----------
+PROBLEMS = [
+    "商談の数が足りない",
+    "マーケティングの担当者がいない",
+    "担当者はいるが、施策を動かしきれていない",
+    "広告やLPを作っても、商談につながらない",
+    "何から手をつければいいか分からない",
+]
+problem_li = "\n".join(f"        <li>{x}</li>" for x in PROBLEMS)
+h += f'''
+  <!-- 1.5 お悩み（#problems。背景：薄い黄。チェック付きの悩み5つ → 下向きの矢印 → 答え（サービス名の意味）。この後の「3つの特長」につなぐ） -->
+  <section class="section section--problems" id="problems" aria-labelledby="problems-title">
+    <div class="container">
+      {sec_head("お悩み", 'こんな<span class="mark">お悩み</span>はありませんか？', "problems-title")}
+      <ul class="problem-list reveal">
+{problem_li}
+      </ul>
+      <div class="problem-answer reveal">
+        <p class="problem-answer__title"><span class="phrase">そのお悩み、</span><span class="phrase"><span class="mark">ひとりめマーケ</span>が解決します</span></p>
+        <p class="problem-answer__text">ひとりめマーケは、貴社の「一人目のマーケター」として社内に入り、戦略づくりから施策の実行まで担当します。担当者がいない企業様も、担当者がいて手が回らない企業様も、すぐに動き出せます。</p>
+        <ul class="problem-answer__points">
+          <li><span class="num">01</span>責任者の目線で決める</li>
+          <li><span class="num">02</span>実行までやりきる</li>
+          <li><span class="num">03</span>回る体制を残す</li>
+        </ul>
+        <p class="problem-answer__more"><a href="#service">3つの特長を見る</a></p>
       </div>
     </div>
   </section>

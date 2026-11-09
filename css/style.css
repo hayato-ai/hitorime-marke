@@ -911,3 +911,32 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 /* FV：要点カードを無くしたので、ピルの下にボタン。スマホ（767px以下）では資料請求フォームのカードを出さない（従ボタンは download.html へ） */
 .hero .pills + .cta-set { margin-top: 28px; }
 @media (max-width: 767px), (max-height: 520px) and (orientation: landscape) { .hero-form { display: none; } }   /* スマホは縦・横とも非表示 */
+
+/* お悩み（#problems）：薄い黄の面に、白いカードの悩み5つ → 下向きの三角 → 紺の答えの箱（サービス名の意味） */
+.section--problems { background: var(--yellow-soft); }
+.problem-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 880px; margin: 0 auto; }
+@media (min-width: 768px) { .problem-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; } }
+.problem-list li {
+  position: relative; display: flex; align-items: center; min-height: 56px;
+  padding: 12px 16px 12px 52px; background: #fff; border: 2px solid var(--navy); border-radius: 12px;
+  font-size: 16px; font-weight: 900; line-height: 1.6; color: var(--navy);
+}
+.problem-list li::before {
+  content: "\2713"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--yellow); color: var(--navy); font-size: 15px; line-height: 1;
+}
+.problem-answer { position: relative; max-width: 880px; margin: 48px auto 0; padding: 28px 24px; background: var(--navy); border-radius: 16px; color: #fff; text-align: center; }
+.problem-answer::before { content: ""; position: absolute; left: 50%; top: -30px; transform: translateX(-50%); border: 14px solid transparent; border-top: 16px solid var(--navy); }
+.problem-answer__title { font-size: clamp(20px, 2.6vw, 26px); font-weight: 900; line-height: 1.5; }
+.problem-answer__title .mark { color: #fff; background: linear-gradient(transparent 80%, var(--yellow) 80%); }
+.section--problems .sec-head { text-align: center; }
+.section--problems .sec-label { justify-content: center; }
+.problem-answer__text { max-width: 40em; margin: 12px auto 0; font-size: 15.5px; line-height: 1.9; font-weight: 500; text-align: left; }
+@media (min-width: 768px) { .problem-answer { padding: 32px 40px; } .problem-answer__text { text-align: center; } }
+.problem-answer__points { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; max-width: 760px; margin: 20px auto 0; }
+@media (min-width: 768px) { .problem-answer__points { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.problem-answer__points li { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; white-space: nowrap; background: #fff; border-radius: 999px; color: var(--navy); font-size: 15px; font-weight: 900; line-height: 1.4; }
+.problem-answer__points .num { font-family: var(--font-num); font-style: italic; font-size: 15px; color: var(--navy); background: var(--yellow); border-radius: 999px; padding: 1px 8px; }
+.problem-answer__more { margin-top: 16px; font-size: 14px; font-weight: 700; }
+.problem-answer__more a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
