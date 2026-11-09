@@ -4,8 +4,8 @@
    - FORM_ENDPOINT: Apps Script をウェブアプリとして公開したURL（https://script.google.com/macros/s/…/exec）
    - BOOKING_URL  : Google カレンダーの予約ページのURL。入れると、無料相談の送信後にカレンダーを表示する
    送る項目名：company ／ firstname（お名前）／ email ／ phone ／ consult_type ／ message。website はロボット対策の見えない欄 */
-var FORM_ENDPOINT = "";
-var BOOKING_URL = "";
+var FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwKfyZAlqzSPJmKAyAsOKn1D-O1t6Bo4EKeTlo1o-Cm35THFQFgKnID31I_rgHh70uw/exec";
+var BOOKING_URL = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3fTX0eyWLPKCyGExebtZHKF4ATJo4ZCMW0hpOQuylXs_0TsDl6oxTcfatKuLPgUZ8sSLLceRU1?gv=true";
 
 (function () {
   "use strict";

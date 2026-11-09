@@ -17,7 +17,7 @@ try {
     for (const t of TARGETS) {
       const tag = `${t.page}@${w}`;
       await cdp.goto(SITE + t.page + '.html', 900);
-      await cdp.ev(`document.querySelectorAll('.reveal').forEach(e => e.classList.add('is-visible')); true`);
+      await cdp.ev(`document.querySelectorAll('.reveal').forEach(e => e.classList.add('is-visible')); window.FORM_ENDPOINT = ''; true`);
       const R = (s) => `document.querySelector('${t.root}').querySelector(${JSON.stringify(s)})`;
       // 0. 構造
       const st = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; return { n: f.querySelectorAll('input,select,textarea').length, btn: f.querySelector('button[type=submit]').textContent.trim(), note: f.querySelector('.lead-form__note').hidden, fail: f.querySelector('.lead-form__fail').hidden, link: f.querySelector('a[href="privacy.html"]') ? 1 : 0 }; })()`);

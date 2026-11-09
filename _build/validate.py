@@ -663,7 +663,7 @@ for p_ in PAGES:
     if re.search(r"Googleフォーム|GoogleフォームのURL|<iframe|form-frame\"?>\s*<!--", RAW[p_]) and p_ != "privacy.html": print(f"[NG] {p_}: Googleフォームの名残がある"); ok = False
 # forms.js：先頭に設定（空）、Apps Script へ送る、必須の検証。HubSpot の名残がないこと
 FJS = open(OUT + "js/forms.js", encoding="utf-8").read()
-for n_ in ['var FORM_ENDPOINT = "";', 'var BOOKING_URL = "";', "入力してください", "gv=true"]:
+for n_ in ['var FORM_ENDPOINT = "https://script.google.com/macros/s/', 'var BOOKING_URL = "https://calendar.google.com/calendar/appointments/schedules/', "入力してください", "gv=true"]:
     if n_ not in FJS: print(f"[NG] forms.js に「{n_}」がない"); ok = False
 if re.search(r"HUBSPOT|hsforms|\"Content-Type\"", FJS): print("[NG] forms.js に HubSpot の名残か Content-Type の指定がある"); ok = False
 for p_ in ["index.html", "contact.html", "download.html"]:
