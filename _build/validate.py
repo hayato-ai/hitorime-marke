@@ -365,7 +365,7 @@ need("index meta", idx, [
 # 1. FV
 need("FV", S_HERO, [
     '<p class="sec-label">BtoBマーケティング支援・代行</p>',
-    '<h1 id="hero-title"><span class="phrase">商談が足りないBtoB企業の、</span><span class="phrase"><span class="mark">一人目のマーケター</span>に</span><span class="phrase">なります</span></h1>', '<p class="hero__sub">元マーケティング責任者が、戦略から実行まで担当します。</p>',
+    '<h1 id="hero-title"><span class="phrase">マーケティングに</span><span class="phrase">手が回らない</span><span class="phrase">BtoB企業の、</span><span class="phrase"><span class="mark">一人目のマーケター</span>に</span><span class="phrase">なります</span></h1>', '<p class="hero__sub">元マーケティング責任者が、戦略から実行まで担当します。</p>',
     BUBBLE_HTML, "<span>まずは無料で相談する</span>", "<span>資料請求はこちら</span>",
 ])
 if [TXT(x) for x in re.findall(r"<li[^>]*>(.*?)</li>", re.search(r'<ul class="pills">.*?</ul>', S_HERO, re.S).group(0))] != PILLS3: print("[NG] FV のピルが指示書の3つでない"); ok = False
@@ -390,7 +390,7 @@ if S_HERO.count('class="bubble"') != 1 or S_HERO.count("モニター") != 1: pri
 need("特長", S_SVC, [
     '<p class="sec-label">サービスの特長</p>', 'id="service-title"', '<span class="mark">解決できる</span>', '<img ', 'class="svc-intro"',
 ])
-if TXT(re.search(r'<h2 class="sec-title" id="service-title">(.*?)</h2>', S_SVC, re.S).group(1)) != "ひとりめマーケで解決できる、3つのこと": print("[NG] 特長の見出し"); ok = False
+if TXT(re.search(r'<h2 class="sec-title" id="service-title">(.*?)</h2>', S_SVC, re.S).group(1)) != "元事業会社のマーケティング責任者だから解決できる、3つのこと": print("[NG] 特長の見出し"); ok = False
 FEAT_EXP = [
     ("商談につながる施策に、絞れる", "BtoBマーケティングの責任者として、狙う顧客、KPI、予算の配分までを決めてきました。その経験をもとに、商談につながる施策を見極め、限られた予算と時間を集中させます。"),
     ("手が足りなくても、施策が回る", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。戦略だけでなく実行まで担当するので、社内の人手が足りなくても施策が止まりません。"),

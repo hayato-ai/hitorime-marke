@@ -20,7 +20,7 @@ h += f'''
     <div class="container hero__grid">
       <div class="hero__text">
         <p class="sec-label">BtoBマーケティング支援・代行</p>
-        <h1 id="hero-title"><span class="phrase">商談が足りないBtoB企業の、</span><span class="phrase"><span class="mark">一人目のマーケター</span>に</span><span class="phrase">なります</span></h1>
+        <h1 id="hero-title"><span class="phrase">マーケティングに</span><span class="phrase">手が回らない</span><span class="phrase">BtoB企業の、</span><span class="phrase"><span class="mark">一人目のマーケター</span>に</span><span class="phrase">なります</span></h1>
         <p class="hero__sub">元マーケティング責任者が、戦略から実行まで担当します。</p>
         {pills()}
         {cta_set(doc_href="#hero-form")}
@@ -80,7 +80,7 @@ h += f'''
   <section class="section section--alt" id="service" aria-labelledby="service-title">
     <div class="container">
       <div class="svc-intro">
-        {sec_head("サービスの特長", '<span class="phrase">ひとりめマーケで</span><span class="phrase"><span class="mark">解決できる</span>、</span><span class="phrase">3つのこと</span>', "service-title")}
+        {sec_head("サービスの特長", '<span class="phrase">元事業会社の</span><span class="phrase">マーケティング責任者だから</span><span class="phrase"><span class="mark">解決できる</span>、</span><span class="phrase">3つのこと</span>', "service-title")}
         {unsplash(**IMG_SERVICE)}
       </div>
       <ol class="feat-grid reveal">
