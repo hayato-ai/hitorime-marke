@@ -421,7 +421,7 @@ C1, C2, C3 = card(1), card(2), card(3)
 # 上から：（タグ）→ 名前 → ひとこと → こんな方におすすめ → 担当すること → 料金と期間
 for i, (c_, lead, who) in enumerate([
     (C1, "戦略から実行まで、丸ごと任せたい", "マーケティングの担当者がいない企業様"),
-    (C2, "社内の担当者を、支えてほしい", "マーケティングの担当者が1人いる（兼任を含む）企業様"),
+    (C2, "社内の担当者を、支えてほしい", "担当者が1人いる（兼任を含む）企業様"),
     (C3, "必要な施策だけ、頼みたい", "やりたい施策が決まっている企業様"),
 ], 1):
     dl_ = "対応できる施策" if i == 3 else "担当すること"
@@ -436,9 +436,9 @@ for i, (c_, lead, who) in enumerate([
     if not dlist or not (5 <= len(re.findall(r"<li>", dlist.group(0))) <= 7): print(f"[NG] プラン{i}：担当すること（5〜7項目）"); ok = False
     if i == 3 and re.search(r"\d+万円", c_): print("[NG] 施策代行プランに具体的な金額がある"); ok = False
 if '<span class="plan-card__tag">基本のプラン</span>' not in C1 or "plan-card__tag" in C2 or "plan-card__tag" in C3: print("[NG] 「基本のプラン」のタグは1枚目だけのはず"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["現状の整理と、目標・KPIの設計", "戦略と、月ごとの施策計画の策定", "施策の実行（広告運用、LP・資料・ホワイトペーパーの制作、メール配信、ウェビナー・展示会の運営）", "効果測定と、毎週の改善", "インサイドセールス・営業への引き渡しの仕組みづくり", "毎週の定例とレポート"]: print("[NG] 代行プランの担当すること"); ok = False
-if '<p class="plan-card__note">戦略を立てるだけでなく、施策の実行まで担当します。</p>' not in C1: print("[NG] 代行プランに「実行まで担当」の補足がない"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["現状の整理と、目標・KPIの設計", "戦略と、施策の優先順位の決定", "施策計画と制作物（LP・資料・広告など）のレビュー", "毎週の定例と、チャットでのご相談", "担当者の育成（進め方と判断の基準の共有）"]: print("[NG] サポートプランの担当すること"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・資料・メール・ウェビナー・展示会）", "効果測定と改善", "営業への引き渡しの仕組みづくり"]: print("[NG] 代行プランの担当すること"); ok = False
+if '<p class="plan-card__note">戦略だけでなく、実行まで担当します。</p>' not in C1: print("[NG] 代行プランに「実行まで担当」の補足がない"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["目標・KPIの設計", "施策の優先順位づけ", "計画と制作物のレビュー", "毎週の定例とチャット相談", "担当者の育成"]: print("[NG] サポートプランの担当すること"); ok = False
 need("代行プランの料金", C1, [
     '<span class="plan-price__old"><s>通常 月40万円</s></span>',
     '<span class="plan-price__off">先着3社 10万円OFF</span>',
@@ -452,7 +452,7 @@ if bottom(C1) != "料金 通常 月40万円 先着3社 10万円OFF モニター�
 if bottom(C2) != "料金 月15万円〜（税別） 3か月〜": print("[NG] サポートプランの料金と期間", bottom(C2)); ok = False
 if bottom(C3) != "料金 お見積り 施策ごと": print("[NG] 施策代行プランの料金と期間", bottom(C3)); ok = False
 MEASURES = [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C3, re.S).group(0))]
-if MEASURES != ["LP制作", "コンテンツ制作（ホワイトペーパー・記事など）", "営業資料・サービス資料の制作", "ウェビナーの企画・運営代行", "広告運用・集客", "メール配信（ナーチャリング）", "展示会・イベントの集客"]: print("[NG] 施策代行プランの対応できる施策", MEASURES); ok = False
+if MEASURES != ["LP制作", "ホワイトペーパー・記事の制作", "営業資料・サービス資料の制作", "ウェビナーの企画・運営", "広告運用", "メール配信", "展示会・イベントの集客"]: print("[NG] 施策代行プランの対応できる施策", MEASURES); ok = False
 # 注記（小さく、1行ずつ）→ CTAの行1つ
 NOTES = [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="plan-notes[^"]*">.*?</ul>', S_PLANS, re.S).group(0))]
 if NOTES != ["初期費用はかかりません。", "ひとりめ代行プランとひとりめサポートプランは、毎週ご報告します。", "広告費などの実費は含まれません。扱いはご相談のうえで決めます。"]: print("[NG] プランの下の注記", NOTES); ok = False
@@ -555,7 +555,7 @@ mon = {k: v.count("モニター") for k, v in {"FV": S_HERO, "特長": S_SVC, "�
 print("モニターの出現箇所:", mon)
 if mon != {"FV": 2, "特長": 0, "プラン": 2, "担当者": 0, "途中のCTA": 1, "流れ": 0, "FAQ": 0, "最後のCTA": 1}: print("[NG] モニターの表示が想定の箇所（FV・代行の料金とプランのCTA・途中・最後のCTA）だけになっていない"); ok = False
 if "モニター" in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head にモニターがある"); ok = False
-if "、施策代行プラン" not in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head（description）のプラン名がスポットになっていない"); ok = False
+if "、施策代行プランからお選びいただけます" not in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head（description）に3つのプランがない"); ok = False
 
 
 # 写真（v10 と同じ：Unsplash の3枚＋代表のプレースホルダー）
