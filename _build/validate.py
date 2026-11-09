@@ -663,7 +663,7 @@ for p_ in PAGES:
     if re.search(r"Googleフォーム|GoogleフォームのURL|<iframe|form-frame\"?>\s*<!--", RAW[p_]) and p_ != "privacy.html": print(f"[NG] {p_}: Googleフォームの名残がある"); ok = False
 # forms.js：先頭に設定（空）、Apps Script へ送る、必須の検証。HubSpot の名残がないこと
 FJS = open(OUT + "js/forms.js", encoding="utf-8").read()
-for n_ in ['var FORM_ENDPOINT = "https://script.google.com/macros/s/', 'var BOOKING_URL = "https://calendar.google.com/calendar/appointments/schedules/', "入力してください", "gv=true"]:
+for n_ in ['var FORM_ENDPOINT = "https://script.google.com/macros/s/', "var BOOKING_URL = \"\";", "入力してください", "gv=true"]:
     if n_ not in FJS: print(f"[NG] forms.js に「{n_}」がない"); ok = False
 if re.search(r"HUBSPOT|hsforms|\"Content-Type\"", FJS): print("[NG] forms.js に HubSpot の名残か Content-Type の指定がある"); ok = False
 for p_ in ["index.html", "contact.html", "download.html"]:
@@ -676,7 +676,7 @@ for p_ in ["index.html", "contact.html", "download.html"]:
 for p_ in ["privacy.html"]:
     if "forms.js" in RAW[p_]: print(f"[NG] {p_}: フォームが無いのに forms.js を読んでいる"); ok = False
 for need_ in ["まだ決まっていない", "ご相談の内容",
-              '<p class="step-note reveal">ご契約を前提とせず、まずはお気軽にお悩みをお聞かせください。</p>', "返信の目安：2営業日以内</p>", "<h3>日程を選ぶ</h3>", "送信後に表示されるカレンダーから、ご都合のよい日時をお選びいただけます。", "<h3>オンラインでご相談（60分）</h3>"]:
+              '<p class="step-note reveal">ご契約を前提とせず、まずはお気軽にお悩みをお聞かせください。</p>', "返信の目安：2営業日以内</p>", "<h3>日程のご案内</h3>", "2営業日以内に、メールで日程調整のご案内をお送りします。", "<h3>オンラインでご相談（60分）</h3>"]:
     if need_ not in ct_body: print(f"[NG] contact: 「{need_}」がない"); ok = False
 for g_ in ["plan-pick", "data-plan-", "選択中のご相談", "事前入力URL", "?plan=", "一人目のマーケターとして、立ち上げてほしい", "決まった戦略を", "担当者を支えながら", "施策単位で、任せたい"]:
     if g_ in ct: print(f"[NG] contact: 「{g_}」が残っている"); ok = False

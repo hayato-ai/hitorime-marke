@@ -15,7 +15,6 @@ var CONFIG = {
   SENDER_NAME: "ひとりめマーケ 大萱生 隼人",   // 自動返信の差出人名
   SITE_URL: "https://hayato-ai.github.io/hitorime-marke/",
   DOC_URL: "",                                // サービス資料（PDF）の共有リンク。空の間は「資料は追ってお送りします」と書く
-  BOOKING_URL: "https://calendar.app.google/9eAQ7uN3q36Fq3tw9",   // 予約ページのURL（自動返信に載せる）
   BOOKING_KEYWORD: "無料相談",                 // 予約スケジュールの名前に含まれる語。この語を含む予定をリマインドの対象にする
   REMIND_HOURS_BEFORE: 24,                    // 何時間前にリマインドするか
   SHEET_ID: "1tLQVbLVs-5uwaMjOQZO838lbLWKDgi7FeolzwxAEDQE"   // 記録先のスプレッドシートのID（URL の /d/ と /edit の間）。空ならスクリプトが紐づくスプレッドシート
@@ -125,10 +124,7 @@ function autoReply_(kind, v) {
   if (kind === "consult") {
     body = head.concat([
       "無料相談のお申し込みをいただき、ありがとうございます。", "",
-      "お申し込みの画面で日程をお選びいただいた場合は、カレンダーの招待が別途届きます。",
-      CONFIG.BOOKING_URL
-        ? "日程がまだの場合は、こちらからご都合のよい日時をお選びください。\n" + CONFIG.BOOKING_URL
-        : "日程は、2営業日以内にメールで候補をお送りします。",
+      "日程は、2営業日以内にメールでご案内します。",
       "", "■ お申し込みの内容",
       "ご相談内容：" + (v.consult_type || "（未選択）"),
       "ご相談の内容：" + (v.message || "（なし）")

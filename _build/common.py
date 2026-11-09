@@ -418,7 +418,7 @@ def lead_form(kind, pfx, submit_label, consult=False):
           <noscript><p class="lead-form__note">このフォームの送信にはJavaScriptが必要です。</p></noscript>
         </form>
         <div class="lead-form__done" role="status" tabindex="-1" hidden>
-          {'<p>お申し込みありがとうございます。</p><p class="lead-form__meet-lead" hidden>続けて、下のカレンダーからご都合のよい日時をお選びください。</p><div class="lead-form__meet" hidden></div><p class="lead-form__meet-fallback">2営業日以内に、メールで日程の候補をお送りします。</p>' if consult else '<p>お申し込みありがとうございます。1営業日以内に、メールで資料をお送りします。</p>'}
+          {'<p>お申し込みありがとうございます。</p><p class="lead-form__meet-lead" hidden>続けて、下のカレンダーからご都合のよい日時をお選びください。</p><div class="lead-form__meet" hidden></div><p class="lead-form__meet-fallback">2営業日以内に、メールで日程調整のご案内をお送りします。</p>' if consult else '<p>お申し込みありがとうございます。1営業日以内に、メールで資料をお送りします。</p>'}
         </div>'''
 
 

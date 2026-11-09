@@ -49,8 +49,8 @@ c += f'''
         </li>
         <li class="card step">
           <span class="num-badge" aria-hidden="true">2</span>
-          <h3>日程を選ぶ</h3>
-          <p>送信後に表示されるカレンダーから、ご都合のよい日時をお選びいただけます。</p>
+          <h3>日程のご案内</h3>
+          <p>2営業日以内に、メールで日程調整のご案内をお送りします。</p>
         </li>
         <li class="card step step--goal">
           <span class="num-badge" aria-hidden="true">3</span>
