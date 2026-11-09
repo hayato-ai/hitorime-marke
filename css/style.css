@@ -910,4 +910,4 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 
 /* FV：要点カードを無くしたので、ピルの下にボタン。スマホ（767px以下）では資料請求フォームのカードを出さない（従ボタンは download.html へ） */
 .hero .pills + .cta-set { margin-top: 28px; }
-@media (max-width: 767px) { .hero-form { display: none; } }
+@media (max-width: 767px), (max-height: 520px) and (orientation: landscape) { .hero-form { display: none; } }   /* スマホは縦・横とも非表示 */

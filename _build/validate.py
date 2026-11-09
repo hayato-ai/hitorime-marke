@@ -113,8 +113,8 @@ for page in PAGES:
         ("<title>", "title"),
         ('name="description"', "meta description"),
         ('property="og:title"', "OGP"),
-        ('href="css/style.css"', "css 参照"),
-        ('src="js/main.js"', "js 参照"),
+        ('href="css/style.css?v=', "css 参照"),
+        ('src="js/main.js?v=', "js 参照"),
         ('class="header-cta"', "ヘッダーのCTA"),
         ('class="cta-bar"', "下部バー"),
     ]:
@@ -673,7 +673,7 @@ GS = open(OUT + "gas/Code.gs", encoding="utf-8").read()
 for n_ in ["function doPost(", "function setup(", "function hourly(", "hayato.ogayu@gmail.com", "if (d.website)"]:
     if n_ not in GS: print(f"[NG] gas/Code.gs に「{n_}」がない"); ok = False
 for p_ in ["index.html", "contact.html", "download.html"]:
-    if 'src="js/forms.js" defer' not in RAW[p_]: print(f"[NG] {p_}: forms.js を読んでいない"); ok = False
+    if not re.search(r'src="js/forms\.js\?v=[0-9a-f]{8}" defer', RAW[p_]): print(f"[NG] {p_}: forms.js を読んでいない"); ok = False
 for p_ in ["privacy.html"]:
     if "forms.js" in RAW[p_]: print(f"[NG] {p_}: フォームが無いのに forms.js を読んでいる"); ok = False
 for need_ in ["まだ決まっていない", "ご相談の内容",

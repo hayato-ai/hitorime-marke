@@ -32,9 +32,16 @@ CAMERA = '<svg class="ph__icon" viewBox="0 0 24 24" aria-hidden="true" focusable
 INLINE_JS = '''<script>(function(){var d=document.documentElement,w=window;if("IntersectionObserver" in w&&!(w.matchMedia&&w.matchMedia("(prefers-reduced-motion: reduce)").matches)){d.classList.add("js");w.__revealTimer=setTimeout(function(){d.classList.remove("js")},4000)}})();</script>'''
 
 
+# CSS・JS の URL に中身のハッシュを付ける（?v=…）。中身が変わると URL が変わり、スマホなどに残った古いファイルを使わない
+import hashlib
+def asset(path):
+    with open(os.path.join(SCRATCH, os.path.basename(path)), "rb") as f:
+        return f"{path}?v={hashlib.sha1(f.read()).hexdigest()[:8]}"
+
+
 def head(title, desc, og_title, og_desc, og_type="website", noindex=False, images=False, forms=False):
     robots = '\n<meta name="robots" content="noindex">' if noindex else ""
-    forms_js = '\n<script src="js/forms.js" defer></script>' if forms else ""
+    forms_js = f'\n<script src="{asset("js/forms.js")}" defer></script>' if forms else ""
     img_pre = '\n<link rel="preconnect" href="https://images.unsplash.com">' if images else ""
     return f'''<!doctype html>
 <html lang="ja">
@@ -54,9 +61,9 @@ def head(title, desc, og_title, og_desc, og_type="website", noindex=False, image
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>{img_pre}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,700;0,900;1,900&amp;family=Noto+Sans+JP:wght@400;500;700;900&amp;display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@900&amp;text=%E3%81%B2%E3%81%A8%E3%82%8A%E3%82%81%E3%83%9E%E3%83%BC%E3%82%B1&amp;display=swap">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="{asset("css/style.css")}">
 {INLINE_JS}
-<script src="js/main.js" defer></script>{forms_js}
+<script src="{asset("js/main.js")}" defer></script>{forms_js}
 </head>
 <body>
 <a class="skip-link" href="#main">本文へ移動</a>
