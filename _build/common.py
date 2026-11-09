@@ -69,7 +69,7 @@ def _cur(current, name):
 
 # ナビの項目（5つ。開閉するメニューは無い。brief_v13.md）。index 内は同一ページアンカー、他ページからは ./#service
 def nav_items(pre):
-    return [(f"{pre}#service", "サービスの特長"), (f"{pre}#plans", "プラン"), (f"{pre}#flow", "ご支援の流れ"), (f"{pre}#faq", "よくある質問"), ("profile.html", "プロフィール")]
+    return [(f"{pre}#service", "サービスの特長"), (f"{pre}#plans", "プラン"), (f"{pre}#about", "担当者"), (f"{pre}#flow", "ご支援の流れ"), (f"{pre}#faq", "よくある質問")]
 
 
 def logo_html(cls=""):
@@ -326,11 +326,21 @@ def role_tag():
     return f'<p class="role-tag"><span>{ROLE}</span></p>'
 
 
+# 担当者の経歴（職務経歴書 2026年11月版の事実。勤めてきた会社がどういう会社かを書く）
+CAREER = [
+    ("2020年4月", "ペット業界で人材・経営支援を行う事業会社（従業員約300名）に入社。法人営業を担当"),
+    ("2021年4月", "同社でBtoCマーケティングを担当。就職イベントや人材紹介の集客を、予算設計から広告・CRMの運用まで担う"),
+    ("2023年4月", "社長直下でBtoBマーケティング部門を一人で立ち上げ、6名体制まで拡大（2024年8月 リーダー、2025年8月 マネージャー）"),
+    ("2026年", "独立し、ひとりめマーケを開始"),
+]
+
+
 def pills():
-    """実績のピル2つ（FV と profile で同じ。v14：3つ目の「受注から逆算して施策を設計」は削除）"""
+    """FV のピル3つ。3つ目（黄）は、施策の実行だけの依頼も受けることを示す"""
     return '''<ul class="pills">
               <li>BtoBマーケ部門をゼロから構築</li>
               <li>戦略から施策の実行まで担当</li>
+              <li class="is-accent">施策の実行だけのご依頼もOK</li>
             </ul>'''
 
 
@@ -354,8 +364,8 @@ def key_facts():
             </ul>'''
 
 
-# ---- 自前のフォーム（v14：js/forms.js が検証して HubSpot Forms API に POST する。設定が空のときは送信せず注記を出す） ----
-CONSULT_OPTIONS = ["ひとりめ代行プラン", "ひとりめサポートプラン", "スポットプラン", "まだ決まっていない"]
+# ---- 自前のフォーム（js/forms.js が検証して Google Apps Script（gas/Code.gs）に POST する。設定が空のときは送信せず注記を出す） ----
+CONSULT_OPTIONS = ["ひとりめ代行プラン", "ひとりめサポートプラン", "施策代行プラン", "まだ決まっていない"]
 FORM_ERR = "入力してください"
 
 
@@ -381,7 +391,7 @@ def _field(pfx, name, label, req, kind="text", autocomplete=None, options=None, 
 
 
 def lead_form(kind, pfx, submit_label, consult=False):
-    """kind: download（資料請求）／consult（無料相談）。HubSpot のフィールド名：company／firstname（お名前）／email／phone／message／consult_type"""
+    """kind: download（資料請求）／consult（無料相談）。送る項目名：company／firstname（お名前）／email／phone／message／consult_type（受け取りは gas/Code.gs）"""
     f = [
         _field(pfx, "company", "会社名", True, autocomplete="organization"),
         _field(pfx, "firstname", "お名前", True, autocomplete="name"),
@@ -398,6 +408,7 @@ def lead_form(kind, pfx, submit_label, consult=False):
             <label class="check" for="{pfx}-privacy"><input id="{pfx}-privacy" name="privacy" type="checkbox" required aria-required="true" aria-describedby="{pfx}-privacy-err"><span class="check__text"><a href="privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>に同意する<span class="req">必須</span></span></label>
             <p class="field__err" id="{pfx}-privacy-err" hidden>{FORM_ERR}</p>
           </div>
+          <div class="lead-form__hp" aria-hidden="true"><label for="{pfx}-website">ウェブサイト</label><input id="{pfx}-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
           <button class="btn btn--block" type="submit"><span>{submit_label}</span><span class="btn__arrow" aria-hidden="true">{ARROW}</span></button>
           <p class="lead-form__note" role="status" hidden>（設定前のため送信されません）</p>
           <div class="lead-form__fail" role="alert" hidden>

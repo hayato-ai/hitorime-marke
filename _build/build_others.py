@@ -1,101 +1,5 @@
 from common import *
 
-# =============== profile.html ===============
-p = head(
-    f"プロフィール｜{SERVICE}（{SITE_TAG}）",
-    "BtoBマーケティングの戦略の策定から施策の実行、改善まで、一人で担当しています。経歴と実績です。",
-    f"プロフィール｜{SERVICE}",
-    "経歴と実績。",
-) + header("profile", crumb="プロフィール")
-
-# 経歴（年月つきの縦のタイムライン。brief_v11.md「プロフィールの事実」の年月どおり）
-career = [
-    ("2020年4月", "事業会社（ペット業界の人材・経営支援。従業員約300名）に入社。法人営業（1年）"),
-    ("2021年4月", "同社でBtoCマーケティング（就職イベント・人材紹介の集客。予算設計から広告・CRMの運用まで）"),
-    ("2023年4月", "社長直下でBtoBマーケティング部門を一人で立ち上げ、6名体制まで拡大（2024年8月 リーダー、2025年8月 マネージャー）。戦略から施策の実行、インサイドセールスとの連携まで担当"),
-    ("2026年", "独立"),
-]
-career_li = "\n".join(f'''        <li{' class="is-last"' if k == len(career) - 1 else ""}><span class="career__when">{w}</span><span class="career__what">{t}</span></li>''' for k, (w, t) in enumerate(career))
-
-# 得意領域のタグ
-skills = ["BtoBマーケティング戦略", "Web広告（Google・Meta）", "イベント・展示会の集客", "MA・CRM（HubSpot・Salesforce）", "インサイドセールスとの連携"]
-skill_li = "\n".join(f"        <li>{x}</li>" for x in skills)
-
-strength_cards = "\n".join(f'''        <li class="card feat-card">
-          <span class="num-xl" aria-hidden="true">{i:02d}</span>
-          <h3>{"".join(f'<span class="phrase">{x}</span>' for x in t.split("|"))}</h3>
-          <p>{d}</p>
-        </li>''' for i, (t, d) in enumerate(STRENGTHS, 1))
-
-p += f'''
-  <!-- 上部：写真P9（枠のまま）・肩書きのタグ・氏名・ピル2つ（FV と同じ）・本文 -->
-  <section class="page-head" aria-labelledby="page-title">
-    <div class="container person">
-      <div class="reveal">
-        <p class="sec-label">プロフィール</p>
-        <h1 id="page-title">プロフィール</h1>
-        {role_tag()}
-        <p class="person__name">{NAME} <span class="about__reading">{READING}</span></p>
-        {pills()}
-        <p class="person__text">{PROFILE_TEXT}</p>
-      </div>
-      {portrait(P9, "(min-width: 960px) 520px, calc(100vw - 40px)")}
-    </div>
-  </section>
-
-  <!-- 強み（カード3つ：大きな番号＋見出し＋本文。見出しは職務経歴書の本人の言葉） -->
-  <section class="section section--alt" id="strengths" aria-labelledby="strengths-title">
-    <div class="container">
-      {sec_head(None, "強み", "strengths-title")}
-      <ol class="feat-grid strength-grid reveal">
-{strength_cards}
-      </ol>
-    </div>
-  </section>
-
-  <!-- これまで取り組んできたこと（index の担当者と同じ。上流→下流の3つ） -->
-  <section class="section" aria-labelledby="results-title">
-    <div class="container">
-      {sec_head(None, WORKS_TITLE, "results-title")}
-      <div class="reveal">
-        {works_list("check-list--wide")}
-      </div>
-    </div>
-  </section>
-
-  <!-- 経歴（年月つきの縦のタイムライン） -->
-  <section class="section section--alt" aria-labelledby="career-title">
-    <div class="container">
-      {sec_head(None, "経歴", "career-title")}
-      <ol class="career reveal">
-{career_li}
-      </ol>
-    </div>
-  </section>
-
-  <!-- 得意領域（タグ） -->
-  <section class="section" aria-labelledby="skills-title">
-    <div class="container">
-      {sec_head(None, "得意領域", "skills-title")}
-      <ul class="skill-tags reveal">
-{skill_li}
-      </ul>
-    </div>
-  </section>
-
-  <!-- 最後のCTA（紺の全幅帯） -->
-  <section class="cta-band cta-band--plain" aria-labelledby="cta-title">
-    <div class="container">
-      <div class="reveal">
-        <p class="sec-label">無料相談</p>
-        <h2 class="sec-title" id="cta-title">まずは<span class="mark">無料</span>でご相談ください</h2>
-        {btn_pair()}
-      </div>
-    </div>
-  </section>
-''' + back_top() + footer("profile")
-open(OUT + "profile.html", "w", encoding="utf-8").write(finalize(p))
-
 # =============== contact.html（無料相談） ===============
 c = head(
     f"無料相談のお申し込み｜{SERVICE}（{SITE_TAG}）",
@@ -274,13 +178,13 @@ v += f'''
       </ul>
 
       <h2>5. 取扱いの委託と、外国にある事業者の利用</h2>
-      <p>当方は、フォームの受付、顧客情報の管理、日程調整、メールの送信のために、HubSpot, Inc.（米国）が提供するHubSpotを利用しており、入力いただいた情報はHubSpotのサーバーに保存されます。米国の個人情報の保護に関する制度は、個人情報保護委員会のウェブサイト（<a href="https://www.ppc.go.jp/personalinfo/legal/kaiseihogohou/#gaikoku" target="_blank" rel="noopener">外国における個人情報の保護に関する制度等の調査</a>）で確認できます。HubSpotにおける情報の取扱いは、同社のプライバシーポリシーに従います。このほか、メールの送受信にGoogleのサービスを利用しています。</p>
+      <p>当方は、フォームの受付と記録、日程調整、メールの送信のために、Google LLC（米国）が提供するサービス（Googleスプレッドシート、Google Apps Script、Gmail、Googleカレンダー）を利用しており、入力いただいた情報はGoogleのサーバーに保存されます。米国の個人情報の保護に関する制度は、個人情報保護委員会のウェブサイト（<a href="https://www.ppc.go.jp/personalinfo/legal/kaiseihogohou/#gaikoku" target="_blank" rel="noopener">外国における個人情報の保護に関する制度等の調査</a>）で確認できます。Googleにおける情報の取扱いは、同社のプライバシーポリシーに従います。</p>
 
       <h2>6. 安全管理</h2>
       <p>当方は、取得した個人情報の漏えい、滅失または毀損を防ぐため、アクセスできる人の限定、パスワードの管理、二段階認証の利用など、必要かつ適切な措置を講じます。</p>
 
       <h2>7. Cookieと外部サービス</h2>
-      <p>当サイトでは、文字の表示（Google Fonts）と一部の写真（Unsplash）を外部のサービスから読み込んでいます。その際、閲覧者のIPアドレスなどの技術的な情報が各サービスに送られることがあります。現在、アクセス解析のツールは使用していません。導入する場合は、この方針を改定してお知らせします。</p>
+      <p>当サイトはGitHub Pages（GitHub, Inc.）で公開しており、文字の表示（Google Fonts）と一部の写真（Unsplash）を外部のサービスから読み込んでいます。その際、閲覧者のIPアドレスなどの技術的な情報が各サービスに送られることがあります。現在、アクセス解析のツールは使用していません。導入する場合は、この方針を改定してお知らせします。</p>
 
       <h2>8. 開示等のご請求</h2>
       <p>ご本人から、保有個人データの利用目的の通知、開示、訂正、追加、削除、利用の停止、第三者への提供の停止のご請求があった場合は、ご本人であることを確認したうえで、法令に従い遅滞なく対応します。上記のお問い合わせ先までご連絡ください。</p>

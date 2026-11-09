@@ -1,6 +1,6 @@
 import { launch, SITE, sleep } from './cdp.mjs';
 
-const pages = ['index', 'profile', 'contact', 'download', 'privacy'];
+const pages = ['index', 'contact', 'download', 'privacy'];
 const viewports = [
   [320, 568, true], [360, 740, true], [375, 812, true], [414, 896, true], [600, 900, true], [719, 900, true], [720, 900, true],
   [767, 1024, false], [768, 1024, false], [900, 800, false], [1024, 768, false],
@@ -171,7 +171,7 @@ try {
       if (!wantNav && hd.n.nav !== 0) issues.push('ナビが出ている');
       const hdrExp = w >= 768 ? 77 : 69;
       if (!(hd.hdrH === hdrExp) && !(w < 768 && h <= 480)) issues.push(`ヘッダーの高さ ${hd.hdrH}（想定 ${hdrExp}）`);
-      if (p === 'index' || p === 'profile') { const exp = w >= 768 ? ['contact.html', 'download.html'] : ['contact.html']; if (JSON.stringify(hd.ctaVisible) !== JSON.stringify(exp)) issues.push(`ヘッダーのCTA ${hd.ctaVisible}（想定 ${exp}）`); }
+      if (p === 'index') { const exp = w >= 768 ? ['contact.html', 'download.html'] : ['contact.html']; if (JSON.stringify(hd.ctaVisible) !== JSON.stringify(exp)) issues.push(`ヘッダーのCTA ${hd.ctaVisible}（想定 ${exp}）`); }
       headerRows.push(`${w}:${hd.minGap}/${hd.maxOff}`);
       // 横スクロール（モバイル表示では、はみ出しがあるとレイアウト幅 innerWidth が広がるので、指定幅との一致も見る）
       if (o.vw !== w) issues.push(`レイアウト幅が指定幅と違う innerWidth=${o.vw} w=${w}`);

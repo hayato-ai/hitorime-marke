@@ -826,7 +826,7 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 .hero-form { scroll-margin-top: 90px; }
 
 /* ---------- 自前のフォーム（js/forms.js が検証・送信） ---------- */
-.lead-form { display: grid; gap: 14px; }
+.lead-form { position: relative; display: grid; gap: 14px; }
 .lead-form[hidden], .lead-form__done[hidden] { display: none; }
 .field { min-width: 0; }
 .field label { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 14px; font-weight: 900; line-height: 1.5; color: var(--navy); }
@@ -888,3 +888,14 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 
 /* 代表の写真：顔が切れないよう上寄せ（横長の 8:5 の枠でも頭から胸まで入る） */
 .ph--portrait img { object-position: 50% 14%; }
+
+/* ロボット対策の見えない欄（人には見えず、読み上げもされない） */
+.lead-form__hp { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; opacity: 0; pointer-events: none; }
+
+/* FV の3つ目のピル（施策の実行だけの依頼もOK）：黄で目立たせる */
+.hero .pills li.is-accent { background: var(--yellow); }
+
+/* 担当者の経歴（index。プロフィールのページを無くしたので、年表をここに置く） */
+.career--about { margin-top: 16px; }
+.career--about li { padding-bottom: 20px; }
+@media (min-width: 768px) { .career--about li { grid-template-columns: 110px minmax(0, 1fr); gap: 16px; padding-bottom: 20px; } .career--about .career__when { font-size: 16px; } .career--about .career__what { font-size: 15px; } }

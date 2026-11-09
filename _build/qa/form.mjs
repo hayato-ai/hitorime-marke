@@ -25,7 +25,7 @@ try {
       if (!st.note || !st.fail) NG(tag, '最初から注記／失敗の文が出ている');
       if (await cdp.ev(`!!${R('.lead-form__micro')}`)) NG(tag, '「入力は1分」の文が残っている');
       if (!st.link) NG(tag, 'プライバシーポリシーへのリンクがない');
-      if (st.n !== (t.consult ? 7 : 5)) NG(tag, '入力欄の数', st.n);
+      if (st.n !== (t.consult ? 8 : 6)) NG(tag, '入力欄の数', st.n);
       // 1. 空のまま送信 → 必須に「入力してください」、任意には出ない
       await cdp.ev(`${R('button[type=submit]')}.click(); true`);
       await sleep(150);
@@ -53,8 +53,8 @@ try {
       const e3 = await cdp.ev(`!${R('[data-field=email] .field__err')}.hidden`);
       if (e3) NG(tag, '直してもエラーが消えない');
       // 3. 設定が空：送信しない（fetch が呼ばれない）、注記が出る
-      await cdp.ev(`window.__calls = []; window.fetch = (u, o) => { window.__calls.push({ u: String(u), b: o && o.body }); return Promise.resolve({ ok: true, status: 200 }); }; true`);
-      if (t.consult) await cdp.ev(`(() => { const f = ${R('form.lead-form')}; f.querySelector('[name=consult_type]').value = 'スポットプラン'; f.querySelector('[name=message]').value = '相談です'; })(); true`);
+      await cdp.ev(`window.__calls = []; window.fetch = (u, o) => { window.__calls.push({ u: String(u), b: o && o.body }); return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ok: true }) }); }; true`);
+      if (t.consult) await cdp.ev(`(() => { const f = ${R('form.lead-form')}; f.querySelector('[name=consult_type]').value = '施策代行プラン'; f.querySelector('[name=message]').value = '相談です'; })(); true`);
       await cdp.ev(`${R('[name=phone]')}.value = '03-1234-5678'; ${R('button[type=submit]')}.click(); true`);
       await sleep(250);
       const e4 = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const n = f.querySelector('.lead-form__note'); return { calls: window.__calls.length, note: !n.hidden, text: n.textContent.trim(), formShown: !f.hidden, done: !f.parentNode.querySelector('.lead-form__done').hidden }; })()`);
@@ -62,28 +62,27 @@ try {
       if (!e4.note || e4.text !== '（設定前のため送信されません）') NG(tag, '設定前の注記が出ない', JSON.stringify(e4));
       if (!e4.formShown || e4.done) NG(tag, '設定前なのにフォームが置き換わった');
       // 4. 設定あり：POST の中身
-      await cdp.ev(`window.HUBSPOT_PORTAL_ID = '12345'; window.HUBSPOT_FORM_DOWNLOAD = 'aaaa-dl'; window.HUBSPOT_FORM_CONSULT = 'bbbb-co'; ${R('button[type=submit]')}.click(); true`);
+      await cdp.ev(`window.FORM_ENDPOINT = 'https://script.google.com/macros/s/TEST/exec'; ${R('button[type=submit]')}.click(); true`);
       await sleep(400);
       const e5 = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const d = f.parentNode.querySelector('.lead-form__done'); return { calls: window.__calls, formHidden: f.hidden, doneShown: !d.hidden, doneText: d.textContent.trim(), focus: document.activeElement === d }; })()`);
       if (e5.calls.length !== 1) NG(tag, 'POST が1回でない', e5.calls.length);
       else {
         const c = e5.calls[0];
-        const guid = t.kind === 'consult' ? 'bbbb-co' : 'aaaa-dl';
-        if (c.u !== `https://api.hsforms.com/submissions/v3/integration/submit/12345/${guid}`) NG(tag, 'URL', c.u);
+        if (c.u !== 'https://script.google.com/macros/s/TEST/exec') NG(tag, 'URL', c.u);
         const b = JSON.parse(c.b);
-        const names = b.fields.map((x) => x.name).join(',');
-        const exp = t.consult ? 'company,firstname,email,phone,consult_type,message' : 'company,firstname,email,phone';
+        const names = Object.keys(b).filter((k) => !['form', 'page'].includes(k)).join(',');
+        const exp = t.consult ? 'company,firstname,email,phone,consult_type,message,website' : 'company,firstname,email,phone,website';
         if (names !== exp) NG(tag, 'フィールド名', names);
-        const fv = Object.fromEntries(b.fields.map((x) => [x.name, x.value]));
+        const fv = b;
         if (fv.firstname !== 'テスト 太郎' || fv.company !== 'テスト株式会社' || fv.email !== 'taro@example.com' || fv.phone !== '03-1234-5678') NG(tag, '値', JSON.stringify(fv));
-        if (t.consult && (fv.consult_type !== 'スポットプラン' || fv.message !== '相談です')) NG(tag, '相談の値', JSON.stringify(fv));
-        if (!b.context || !b.legalConsentOptions) NG(tag, 'context／同意の情報がない');
+        if (t.consult && (fv.consult_type !== '施策代行プラン' || fv.message !== '相談です')) NG(tag, '相談の値', JSON.stringify(fv));
+        if (b.form !== t.kind || !b.page || b.website !== '') NG(tag, 'form／page／website', JSON.stringify(b));
       }
       if (!e5.formHidden || !e5.doneShown || !e5.doneText.startsWith(t.consult ? 'お申し込みありがとうございます。' : 'お申し込みありがとうございます。1営業日以内に、メールで資料をお送りします。')) NG(tag, '成功時の置き換え', JSON.stringify(e5));
       // 5. 失敗（500）：エラー文＋メールアドレス。ボタンが戻る。※ 別のページ読み込みで確認
       await cdp.goto(SITE + t.page + '.html', 700);
       await cdp.ev(`document.querySelectorAll('.reveal').forEach(e => e.classList.add('is-visible')); true`);
-      await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const set = (n, v) => { const c = f.querySelector('[name=' + n + ']'); c.value = v; }; set('company', 'A'); set('firstname', 'B'); set('email', 'a@b.co'); set('phone', '0312345678'); f.querySelector('#${t.pfx}-privacy').checked = true; window.HUBSPOT_PORTAL_ID = '1'; window.HUBSPOT_FORM_DOWNLOAD = 'x'; window.HUBSPOT_FORM_CONSULT = 'y'; window.fetch = () => Promise.resolve({ ok: false, status: 500 }); f.querySelector('button[type=submit]').click(); })(); true`);
+      await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const set = (n, v) => { const c = f.querySelector('[name=' + n + ']'); c.value = v; }; set('company', 'A'); set('firstname', 'B'); set('email', 'a@b.co'); set('phone', '0312345678'); f.querySelector('#${t.pfx}-privacy').checked = true; window.FORM_ENDPOINT = 'https://script.google.com/macros/s/TEST/exec'; window.fetch = () => Promise.resolve({ ok: false, status: 500 }); f.querySelector('button[type=submit]').click(); })(); true`);
       await sleep(400);
       const e6 = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const x = f.querySelector('.lead-form__fail'); const b = f.querySelector('button[type=submit]'); return { shown: !x.hidden, hasMail: x.textContent.includes('hayato.ogayu@gmail.com'), text: x.querySelector('p').textContent.trim(), btnDisabled: b.disabled, label: b.textContent.trim(), formShown: !f.hidden }; })()`);
       if (!e6.shown || !e6.hasMail || e6.btnDisabled || !e6.formShown || e6.label !== t.label) NG(tag, '失敗時の表示', JSON.stringify(e6));
@@ -92,7 +91,7 @@ try {
       await sleep(300);
       if (!(await cdp.ev(`!${R('.lead-form__fail')}.hidden`))) NG(tag, 'ネットワークエラーで失敗の表示が出ない');
       // 6. 横スクロール・はみ出し・タップ領域
-      const ov = await cdp.ev(`(() => { const de = document.documentElement; const root = document.querySelector('${t.root}'); const rr = root.getBoundingClientRect(); const bad = []; for (const el of root.querySelectorAll('*')) { const cs = getComputedStyle(el); if (cs.display === 'none') continue; const r = el.getBoundingClientRect(); if (r.width && (r.right > rr.right + 0.5 || r.left < rr.left - 0.5)) bad.push(el.tagName + '.' + el.className); } const small = [...root.querySelectorAll('input[type=text],input[type=email],input[type=tel],select,button')].filter(e => e.getBoundingClientRect().height < 44).length; return { sw: de.scrollWidth, cw: de.clientWidth, bad: bad.slice(0, 4), small }; })()`);
+      const ov = await cdp.ev(`(() => { const de = document.documentElement; const root = document.querySelector('${t.root}'); const rr = root.getBoundingClientRect(); const bad = []; for (const el of root.querySelectorAll('*')) { if (el.closest('.lead-form__hp')) continue; const cs = getComputedStyle(el); if (cs.display === 'none') continue; const r = el.getBoundingClientRect(); if (r.width && (r.right > rr.right + 0.5 || r.left < rr.left - 0.5)) bad.push(el.tagName + '.' + el.className); } const small = [...root.querySelectorAll('input[type=text],input[type=email],input[type=tel],select,button')].filter(e => !e.closest('.lead-form__hp') && e.getBoundingClientRect().height < 44).length; return { sw: de.scrollWidth, cw: de.clientWidth, bad: bad.slice(0, 4), small }; })()`);
       if (ov.sw > ov.cw) NG(tag, '横スクロール', ov.sw, ov.cw);
       if (ov.bad.length) NG(tag, 'カードからはみ出す要素', ov.bad.join(' '));
       if (ov.small) NG(tag, '高さ44px未満の入力欄／ボタン', ov.small);

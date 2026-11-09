@@ -26,10 +26,10 @@ try {
     let url = await cdp.ev('location.href');
     console.log(`${String(w).padStart(4)} click footer link → ${url.replace(SITE, '')}`);
     if (!/contact\.html#other$/.test(url)) bad++;
-    for (const [label, id] of [['サービスの特長', 'service'], ['プラン', 'plans'], ['ご支援の流れ', 'flow'], ['よくある質問', 'faq']]) {
+    for (const [label, id] of [['サービスの特長', 'service'], ['プラン', 'plans'], ['担当者', 'about'], ['ご支援の流れ', 'flow'], ['よくある質問', 'faq']]) {
       // ヘッダーのナビ（1024px以上だけ出る）
       if (w >= 1024) {
-        await cdp.goto(SITE + 'profile.html', 800);
+        await cdp.goto(SITE + 'privacy.html', 800);
         await cdp.ev(`[...document.querySelectorAll('.site-nav a')].find(a => a.textContent.trim() === ${JSON.stringify(label)}).click(); true`);
         await sleep(1800);
         url = await cdp.ev('location.href');
@@ -39,7 +39,7 @@ try {
         if (!okc) bad++;
       }
       // フッターの「サイト内」（全幅）
-      await cdp.goto(SITE + 'profile.html', 800);
+      await cdp.goto(SITE + 'privacy.html', 800);
       await cdp.ev(`[...document.querySelectorAll('.site-footer .footer__col:nth-of-type(1) a, .site-footer nav a')].find(a => a.textContent.trim() === ${JSON.stringify(label)}).click(); true`);
       await sleep(1800);
       url = await cdp.ev('location.href');
@@ -48,8 +48,8 @@ try {
       console.log(`${String(w).padStart(4)} click footer nav ${label} → ${url.replace(SITE, '')} top=${m3.top} hdrBottom=${m3.hdrBottom} ${okf ? 'ok' : 'NG'}`);
       if (!okf) bad++;
     }
-    // フッターの TOP・ロゴ・プロフィール・お問い合わせ・プライバシー
-    for (const [txt, re] of [['TOP', /\/(index\.html)?$/], ['無料相談', /contact\.html$/], ['サービス資料のダウンロード', /download\.html$/], ['プライバシーポリシー', /privacy\.html$/], ['プロフィール', /profile\.html$/]]) {
+    // フッターの TOP・ロゴ・お問い合わせ・プライバシー
+    for (const [txt, re] of [['TOP', /\/(index\.html)?$/], ['無料相談', /contact\.html$/], ['サービス資料のダウンロード', /download\.html$/], ['プライバシーポリシー', /privacy\.html$/]]) {
       await cdp.goto(SITE + 'contact.html', 600);
       await cdp.ev(`[...document.querySelectorAll('.site-footer a')].find(a => a.textContent.trim() === ${JSON.stringify(txt)}).click(); true`);
       await sleep(900);

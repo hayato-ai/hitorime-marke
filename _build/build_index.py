@@ -9,7 +9,7 @@ from common import *
 TITLE = SERVICE + "｜BtoBマーケティング支援・代行｜元マーケティング責任者が戦略から実行まで"
 OG_TITLE = SERVICE + "｜BtoBマーケティング支援・代行｜元マーケティング責任者が戦略から実行まで"
 DESC = ("元マーケティング責任者が、BtoBマーケティングの戦略から実行まで担当します。"
-        "ひとりめ代行プラン、ひとりめサポートプラン、スポットプランからお選びいただけます。ご相談は無料です。")
+        "ひとりめ代行プラン、ひとりめサポートプラン、施策代行プランからお選びいただけます。施策の実行だけのご依頼も承ります。ご相談は無料です。")
 
 h = head(TITLE, DESC, OG_TITLE, DESC, images=True, forms=True) + header("index")
 
@@ -82,15 +82,13 @@ PLANS = [
          does=["戦略と優先順位の決定", "計画と制作物のレビュー", "毎週の定例とご相談"],
          price='<p class="plan-price"><span class="plan-price__amt">月<span class="big">15</span>万円〜<span class="plan-price__tax">（税別）</span></span></p>\n'
                '              <p class="plan-price__sub">3か月〜</p>'),
-    dict(id=3, name="スポットプラン", tag=None,
+    dict(id=3, name="施策代行プラン", tag=None,
          lead="必要な施策だけ、頼みたい",
          who="やりたい施策が決まっている企業様",
-         does=None,
-         courses=[("ライト", "15万円〜", "（LP・資料などの制作。構成の設計込み）"),
-                  ("スタンダード", "30万円〜", "（設計・制作・配信まで）"),
-                  ("フル", "45万円〜", "（実行・振り返り・営業への引き渡しまで）")],
+         does=["LP制作", "コンテンツ制作（ホワイトペーパー・記事など）", "ウェビナーの企画・運営代行", "広告運用・集客", "展示会・イベントの集客"],
+         does_label="対応できる施策",
          price='<p class="plan-price"><span class="plan-price__amt plan-price__amt--quote">お見積り</span></p>\n'
-               '              <p class="plan-price__sub">目安：15万円〜（税別）・施策ごと</p>'),
+               '              <p class="plan-price__sub">施策ごと</p>'),
 ]
 plan_cards = []
 for p in PLANS:
@@ -99,7 +97,7 @@ for p in PLANS:
         does = "\n".join(f"              <li>{d}</li>" for d in p["does"])
         body = f'''
           <div class="plan-card__sec plan-card__does">
-            <p class="k-label">担当すること</p>
+            <p class="k-label">{p.get("does_label", "担当すること")}</p>
             <ul class="dot-list">
 {does}
             </ul>
@@ -127,7 +125,7 @@ for p in PLANS:
             </div>
           </div>
         </li>''')
-PLAN_NOTES = ["初期費用はかかりません。", "代行プランとサポートプランは、毎週ご報告します。", "広告費などの実費は含まれません。扱いはご相談のうえで決めます。"]
+PLAN_NOTES = ["初期費用はかかりません。", "ひとりめ代行プランとひとりめサポートプランは、毎週ご報告します。", "広告費などの実費は含まれません。扱いはご相談のうえで決めます。"]
 plan_notes = "\n".join(f"        <li>{n}</li>" for n in PLAN_NOTES)
 h += f'''
   <!-- 3. プラン（#plans。背景：白。3つの名前つきプランを PC（1024px以上）で横に3枚、それ未満は1列。カードの下に注記（1行ずつ）、その下にCTAの行を1つ） -->
@@ -148,9 +146,8 @@ h += f'''
 '''
 
 # ---------- 4. 担当者（薄） ----------
-# 左に写真（プレースホルダー）、右に「肩書き（黄のタグ）→ 氏名 → 本文 → これまで取り組んできたこと（チェック3つ）→ 経歴の流れ → プロフィールを見る」
-CAREER_FLOW = ["法人営業", "BtoCマーケティング", "BtoBマーケティング部門の立ち上げ", "独立"]
-career_flow = "\n".join(f'          <li{" class=\"is-last\"" if k == len(CAREER_FLOW) - 1 else ""}><span>{t}</span></li>' for k, t in enumerate(CAREER_FLOW))
+# 左に写真、右に「肩書き（黄のタグ）→ 氏名 → 本文 → これまで取り組んできたこと（チェック3つ）→ 経歴（勤めてきた会社と役割の年表）」
+career_li = "\n".join(f'''            <li{' class="is-last"' if k == len(CAREER) - 1 else ""}><span class="career__when">{w}</span><span class="career__what">{t}</span></li>''' for k, (w, t) in enumerate(CAREER))
 h += f'''
   <!-- 4. 担当者（背景：薄い青灰。左に写真、右に 肩書きのタグ・氏名・本文・これまで取り組んできたこと・経歴の流れ・ボタン） -->
   <section class="section section--alt" id="about" aria-labelledby="about-title">
@@ -162,14 +159,14 @@ h += f'''
         </div>
         <div class="about__body reveal">
           {role_tag()}
-          <p class="about__name">{NAME} <span class="about__reading">{READING}</span></p>
+          <p class="about__name">{NAME}</p>
           <p class="about__text">{ABOUT_TEXT}</p>
           <h3 class="works-title">{WORKS_TITLE}</h3>
           {works_list()}
-          <ol class="career-flow">
-{career_flow}
+          <h3 class="works-title">経歴</h3>
+          <ol class="career career--about">
+{career_li}
           </ol>
-          <p class="about__more"><a class="btn btn--ghost" href="profile.html"><span>プロフィールを詳しく見る</span><span class="btn__arrow" aria-hidden="true">{ARROW}</span></a></p>
         </div>
       </div>
     </div>
@@ -214,7 +211,7 @@ h += f'''
 
 # ---------- 6. よくあるご質問（白。#faq。4問。閉じたアコーディオン） ----------
 faq = [
-    ("契約期間と、|途中解約について|教えてください。", "ひとりめ代行プランとひとりめサポートプランは、最初の3か月を最低期間とし、4か月目以降は1か月ごとに更新できます。最初の3か月の途中での解約は、原則としてお受けしていません。スポットプランは、施策ごとのご契約です。"),
+    ("契約期間と、|途中解約について|教えてください。", "ひとりめ代行プランとひとりめサポートプランは、最初の3か月を最低期間とし、4か月目以降は1か月ごとに更新できます。最初の3か月の途中での解約は、原則としてお受けしていません。施策代行プランは、施策ごとのご契約です。"),
     ("社内に|マーケティング担当者が|いなくても|進められますか？", "はい。担当者がいない状態からでも始められます。"),
     ("料金に含まれない|ものはありますか？", "広告費やツール代などの実費は含まれません。扱いはご相談のうえで決めます。"),
     ("具体的に|相談したいことが|決まっていなくても|申し込んでいいですか？", "はい。現状をお聞きしながら一緒に整理します。"),

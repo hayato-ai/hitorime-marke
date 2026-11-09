@@ -1,14 +1,11 @@
-/* 自前のフォーム（v14）：必須項目をその場で検証し、HubSpot Forms API に JSON で POST する。
-   ★ HubSpot の設定（公開前に本人が入れる）。下の3つが空のあいだは送信せず、フォームの下に「（設定前のため送信されません）」と出す。
-   - HUBSPOT_PORTAL_ID    : HubSpot のポータルID（アカウントID）
-   - HUBSPOT_FORM_DOWNLOAD: 資料請求フォームの GUID
-   - HUBSPOT_FORM_CONSULT : 無料相談フォームの GUID
-   HubSpot 側のフィールド名：company ／ firstname（お名前をそのまま入れる）／ email ／ phone ／ message ／ consult_type */
-var HUBSPOT_PORTAL_ID = "";
-var HUBSPOT_FORM_DOWNLOAD = "";
-var HUBSPOT_FORM_CONSULT = "";
-/* 日程調整（HubSpot ミーティング）の予約ページのURL。入れると、無料相談の送信後にカレンダーを表示する */
-var HUBSPOT_MEETING_URL = "";
+/* 自前のフォーム：必須項目をその場で検証し、Google Apps Script（gas/Code.gs）に送る。
+   受け取った側で、スプレッドシートへの記録・運営者への通知・送った人への自動返信を行う。
+   ★ 設定（手順は docs/google-setup.md）。FORM_ENDPOINT が空のあいだは送信せず、フォームの下に「（設定前のため送信されません）」と出す。
+   - FORM_ENDPOINT: Apps Script をウェブアプリとして公開したURL（https://script.google.com/macros/s/…/exec）
+   - BOOKING_URL  : Google カレンダーの予約ページのURL。入れると、無料相談の送信後にカレンダーを表示する
+   送る項目名：company ／ firstname（お名前）／ email ／ phone ／ consult_type ／ message。website はロボット対策の見えない欄 */
+var FORM_ENDPOINT = "";
+var BOOKING_URL = "";
 
 (function () {
   "use strict";
@@ -16,12 +13,7 @@ var HUBSPOT_MEETING_URL = "";
   var MSG_REQUIRED = "入力してください";
   var MSG_EMAIL = "メールアドレスの形式で入力してください";
   var MSG_CHECK = "同意にチェックを入れてください";
-  var CONSENT_TEXT = "プライバシーポリシーに同意する";
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  function formGuid(kind) {
-    return kind === "consult" ? HUBSPOT_FORM_CONSULT : HUBSPOT_FORM_DOWNLOAD;
-  }
 
   function control(field) {
     return field.querySelector("input, select, textarea");
@@ -66,23 +58,15 @@ var HUBSPOT_MEETING_URL = "";
     return first;
   }
 
-  function buildPayload(form) {
-    var data = {};
+  function buildPayload(form, kind) {
+    var data = { form: kind, page: location.href.split("#")[0] };
     var inputs = form.querySelectorAll("input, select, textarea");
     for (var i = 0; i < inputs.length; i++) {
       var c = inputs[i];
-      if (c.type === "checkbox") continue;
+      if (c.type === "checkbox" || !c.name) continue;
       data[c.name] = (c.value || "").trim();
     }
-    var fields = [];
-    ["company", "firstname", "email", "phone", "consult_type", "message"].forEach(function (n) {
-      if (data[n]) fields.push({ name: n, value: data[n] });
-    });
-    return {
-      fields: fields,
-      context: { pageUri: location.href.split("#")[0], pageName: document.title },
-      legalConsentOptions: { consent: { consentToProcess: true, text: CONSENT_TEXT } }
-    };
+    return data;
   }
 
   function show(el, on) {
@@ -124,9 +108,8 @@ var HUBSPOT_MEETING_URL = "";
         first.focus();
         return;
       }
-      var portal = (window.HUBSPOT_PORTAL_ID || "").trim();
-      var guid = ((kind === "consult" ? window.HUBSPOT_FORM_CONSULT : window.HUBSPOT_FORM_DOWNLOAD) || "").trim();
-      if (!portal || !guid) {
+      var endpoint = (window.FORM_ENDPOINT || "").trim();
+      if (!endpoint) {
         // 設定前：送信しない
         show(note, true);
         return;
@@ -135,24 +118,22 @@ var HUBSPOT_MEETING_URL = "";
       if (btn) btn.disabled = true;
       var original = label ? label.textContent : "";
       if (label) label.textContent = "送信しています…";
-      var url = "https://api.hsforms.com/submissions/v3/integration/submit/" + encodeURIComponent(portal) + "/" + encodeURIComponent(guid);
-      fetch(url, {
+      // Content-Type を付けない（text/plain の単純なリクエストにして、Apps Script で事前確認の通信が要らないようにする）
+      fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(buildPayload(form))
+        body: JSON.stringify(buildPayload(form, kind))
       }).then(function (res) {
         if (!res.ok) throw new Error("HTTP " + res.status);
-        return res;
-      }).then(function () {
+        return res.json();
+      }).then(function (r) {
+        if (!r || !r.ok) throw new Error("NG");
         form.hidden = true;
         if (done) {
-          var meetUrl = (window.HUBSPOT_MEETING_URL || "").trim();
+          var meetUrl = (window.BOOKING_URL || "").trim();
           var meet = done.querySelector(".lead-form__meet");
           if (meet && meetUrl) {
-            var fd = new FormData(form);
-            var q = "embed=true&email=" + encodeURIComponent(fd.get("email") || "") + "&firstName=" + encodeURIComponent(fd.get("firstname") || "") + "&company=" + encodeURIComponent(fd.get("company") || "");
             var ifr = document.createElement("iframe");
-            ifr.src = meetUrl + (meetUrl.indexOf("?") < 0 ? "?" : "&") + q;
+            ifr.src = meetUrl + (/[?&]gv=true/.test(meetUrl) ? "" : (meetUrl.indexOf("?") < 0 ? "?" : "&") + "gv=true");
             ifr.title = "日程調整のカレンダー";
             ifr.className = "lead-form__meet-frame";
             ifr.loading = "lazy";

@@ -15,7 +15,7 @@ from common import OUT
 SP = OUT
 V3 = OUT
 V2 = SP + "site_v13/"   # 比較元（1つ前の版。件数の参考のみ）
-PAGES = ["index.html", "profile.html", "contact.html", "download.html", "privacy.html"]
+PAGES = ["index.html", "contact.html", "download.html", "privacy.html"]
 
 VOID = {"meta", "link", "br", "img", "hr", "input", "source", "wbr", "col"}
 # svg 内の自己完結要素（<line/> など）は startendtag で届くので問題ない
@@ -226,8 +226,7 @@ for page in PAGES:
 
 # v14：残す【要記入】は、読み仮名、メールアドレス、プライバシーポリシーの制定日（と代表の写真）だけ。GoogleフォームのURLは全ページから削除。HubSpot の設定は【要記入】ではなく forms.js の空の設定値。以下は v13 の説明：社名の【要記入】は全ページから無くす。代表の写真はプレースホルダーのまま（【要記入】の文字は無い）
 ALLOWED_TODO = {
-    "index.html": {"読み仮名"},
-    "profile.html": {"読み仮名"},
+    "index.html": set(),
     "contact.html": set(),
     "download.html": set(),
     "privacy.html": set(),
@@ -290,7 +289,7 @@ for page in PAGES:
     if '<li><a href="./">TOP</a></li>' not in src_: print(f"[NG] {page}: フッターの「TOP」がない"); ok = False
     if 'class="logo" href="./"' not in src_: print(f"[NG] {page}: ロゴのリンクがない"); ok = False
     pre = "" if page == "index.html" else "./"
-    for nav in [f'{pre}#service', f'{pre}#plans', f'{pre}#flow', f'{pre}#faq', 'profile.html', './']:
+    for nav in [f'{pre}#service', f'{pre}#plans', f'{pre}#flow', f'{pre}#faq', f'{pre}#about', './']:
         if f'href="{nav}"' not in src_: print(f"[NG] {page}: ナビ {nav} がない"); ok = False
     # 先頭が「主、従」の順（btn-row 内）
     for row in re.findall(r'<div class="btn-row[^"]*">(.*?)</div>', src_, re.S):
@@ -320,8 +319,6 @@ idx_body = re.sub(r"<!--.*?-->", "", idx, flags=re.S)
 ct = UNW(RAW["contact.html"])
 ct_body = re.sub(r"<!--.*?-->", "", ct, flags=re.S)
 dl = UNW(RAW["download.html"])
-pf = UNW(RAW["profile.html"])
-pf_body = re.sub(r"<!--.*?-->", "", pf, flags=re.S)
 pv = UNW(RAW["privacy.html"])
 
 
@@ -357,7 +354,7 @@ S_CTA = section(idx_body, r'<section class="cta-band".*?</section>')
 import html as _html
 TXT = lambda t: re.sub(r"\s+", " ", _html.unescape(re.sub(r"<[^>]+>", "", t))).strip()   # タグを外して空白を詰めた可視テキスト
 BUBBLE_HTML = '<p class="bubble"><span>＼ 先着3社 モニター価格 月30万円 ／</span></p>'
-PILLS3 = ["BtoBマーケ部門をゼロから構築", "戦略から施策の実行まで担当"]   # v14：ピルは2つだけ
+PILLS3 = ["BtoBマーケ部門をゼロから構築", "戦略から施策の実行まで担当", "施策の実行だけのご依頼もOK"]
 
 print("\n--- v13 指示書：index（文面はそのまま） ---")
 # 共通：メタ（v11 のまま）
@@ -371,7 +368,7 @@ need("FV", S_HERO, [
     '<h1 id="hero-title"><span class="phrase"><span class="mark">元マーケティング責任者</span>が、</span><span class="phrase">戦略から実行まで担当します</span></h1>',
     BUBBLE_HTML, "<span>まずは無料で相談する</span>", "<span>資料請求はこちら</span>",
 ])
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="pills">.*?</ul>', S_HERO, re.S).group(0))] != PILLS3: print("[NG] FV のピルが指示書の3つでない"); ok = False
+if [TXT(x) for x in re.findall(r"<li[^>]*>(.*?)</li>", re.search(r'<ul class="pills">.*?</ul>', S_HERO, re.S).group(0))] != PILLS3: print("[NG] FV のピルが指示書の3つでない"); ok = False
 gone("FV", S_HERO, ["hero__monitor", "mon-tag", "hero__micro", "60分", "オンライン", "お見積りまで無料", "マーケティング経験5年以上", "社長直下で部門を一人で立ち上げ", "6名体制まで拡大", "モニター募集中", "hero__lead", "ph--hero", "<img", "Googleフォーム"])
 if "【要記入" in S_HERO: print("[NG] FV に【要記入】が残っている"); ok = False
 # 並び：ピル → 吹き出し → ボタン。吹き出しは主ボタンのすぐ上
@@ -409,7 +406,7 @@ if [m for m in re.findall(r'<span class="num-xl" aria-hidden="true">(\d+)</span>
 # 3. プラン
 need("プラン", S_PLANS, ['<p class="sec-label">プラン</p>', 'ご依頼に合わせた<span class="mark">3つのプラン</span>'])
 if len(re.findall(r'<li class="card plan-card', S_PLANS)) != 3: print("[NG] プランのカードが3枚でない"); ok = False
-PLAN_NAMES = ["ひとりめ代行プラン", "ひとりめサポートプラン", "スポットプラン"]   # v14：「ひとりめスポットプラン」から改名
+PLAN_NAMES = ["ひとりめ代行プラン", "ひとりめサポートプラン", "施策代行プラン"]   # 「スポットプラン」から改名
 plan_heads = [TXT(m) for m in re.findall(r'<li class="card plan-card" id="plan-\d">.*?<h3>(.*?)</h3>', S_PLANS, re.S)]
 print("プランの名前:", plan_heads)
 if plan_heads != PLAN_NAMES: print("[NG] プラン名が指示書と違う"); ok = False
@@ -427,15 +424,17 @@ for i, (c_, lead, who) in enumerate([
     (C2, "社内の担当者を、支えてほしい", "マーケティングの担当者が1人いる（兼任を含む）企業様"),
     (C3, "必要な施策だけ、頼みたい", "やりたい施策が決まっている企業様"),
 ], 1):
-    need(f"プラン{i}", c_, [f'<p class="plan-card__lead">{lead}</p>', f"<p>{who}</p>", "こんな方におすすめ", "担当すること", '<p class="k-label">料金</p>'])
-    keys = ["<h3>", 'class="plan-card__lead"', "こんな方におすすめ", "担当すること", '<div class="plan-card__bottom">']
+    dl_ = "対応できる施策" if i == 3 else "担当すること"
+    need(f"プラン{i}", c_, [f'<p class="plan-card__lead">{lead}</p>', f"<p>{who}</p>", "こんな方におすすめ", dl_, '<p class="k-label">料金</p>'])
+    keys = ["<h3>", 'class="plan-card__lead"', "こんな方におすすめ", dl_, '<div class="plan-card__bottom">']
     pos = [c_.find(k) for k in keys]
     if min(pos) < 0 or pos != sorted(pos): print(f"[NG] プラン{i}：項目の順が「名前 → ひとこと → おすすめ → 担当 → 料金」でない", pos); ok = False
     if "<a " in c_ or "btn" in c_: print(f"[NG] プラン{i}：カードの中に相談ボタン（リンク）がある"); ok = False
     for old_ in ["主な成果物", "chips", "plan-card__desc", "plan-card__keep", "コース<"]:
         if old_ in c_: print(f"[NG] プラン{i}：v12 の「{old_}」が残っている"); ok = False
     dlist = re.search(r'<ul class="dot-list[^"]*">.*?</ul>', c_, re.S)
-    if not dlist or len(re.findall(r"<li>", dlist.group(0))) > 3: print(f"[NG] プラン{i}：担当すること（3つまで）"); ok = False
+    if not dlist or len(re.findall(r"<li>", dlist.group(0))) > (5 if i == 3 else 3): print(f"[NG] プラン{i}：担当すること（3つまで。施策代行は5つまで）"); ok = False
+    if i == 3 and re.search(r"\d+万円", c_): print("[NG] 施策代行プランに具体的な金額がある"); ok = False
 if '<span class="plan-card__tag">基本のプラン</span>' not in C1 or "plan-card__tag" in C2 or "plan-card__tag" in C3: print("[NG] 「基本のプラン」のタグは1枚目だけのはず"); ok = False
 if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["戦略と施策の設計", "施策の実行と改善", "営業との連携"]: print("[NG] 代行プランの担当すること"); ok = False
 if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["戦略と優先順位の決定", "計画と制作物のレビュー", "毎週の定例とご相談"]: print("[NG] サポートプランの担当すること"); ok = False
@@ -450,18 +449,18 @@ if TXT(re.search(r'<p class="plan-price plan-price--monitor">.*?</p>', C1, re.S)
 bottom = lambda c_: TXT(re.search(r'<div class="plan-card__bottom">.*?</div>\s*</div>', c_, re.S).group(0))
 if bottom(C1) != "料金 通常 月40万円 先着3社 10万円OFF モニター価格 月30万円（税別） 3か月〜 ※成果が出た場合に、事例として掲載させていただきます": print("[NG] 代行プランの料金と期間", bottom(C1)); ok = False
 if bottom(C2) != "料金 月15万円〜（税別） 3か月〜": print("[NG] サポートプランの料金と期間", bottom(C2)); ok = False
-if bottom(C3) != "料金 お見積り 目安：15万円〜（税別）・施策ごと": print("[NG] スポットプランの料金と期間", bottom(C3)); ok = False
-courses = [TXT(x) for x in re.findall(r'<li><span class="course-list__name">.*?</li>', C3, re.S)]
-if courses != ["ライト 15万円〜（LP・資料などの制作。構成の設計込み）", "スタンダード 30万円〜（設計・制作・配信まで）", "フル 45万円〜（実行・振り返り・営業への引き渡しまで）"]: print("[NG] スポットプランのコース3行", courses); ok = False
+if bottom(C3) != "料金 お見積り 施策ごと": print("[NG] 施策代行プランの料金と期間", bottom(C3)); ok = False
+MEASURES = [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C3, re.S).group(0))]
+if MEASURES != ["LP制作", "コンテンツ制作（ホワイトペーパー・記事など）", "ウェビナーの企画・運営代行", "広告運用・集客", "展示会・イベントの集客"]: print("[NG] 施策代行プランの対応できる施策", MEASURES); ok = False
 # 注記（小さく、1行ずつ）→ CTAの行1つ
 NOTES = [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="plan-notes[^"]*">.*?</ul>', S_PLANS, re.S).group(0))]
-if NOTES != ["初期費用はかかりません。", "代行プランとサポートプランは、毎週ご報告します。", "広告費などの実費は含まれません。扱いはご相談のうえで決めます。"]: print("[NG] プランの下の注記", NOTES); ok = False
+if NOTES != ["初期費用はかかりません。", "ひとりめ代行プランとひとりめサポートプランは、毎週ご報告します。", "広告費などの実費は含まれません。扱いはご相談のうえで決めます。"]: print("[NG] プランの下の注記", NOTES); ok = False
 pos = [S_PLANS.find(x) for x in ['class="plan-grid', 'class="plan-notes', 'class="plans-cta"', 'class="bubble"', 'class="btn-row"']]
 if pos != sorted(pos) or min(pos) < 0: print("[NG] プランの並びが「カード → 注記 → CTAの行（吹き出し → ボタン）」でない", pos); ok = False
 need("プランのCTA", S_PLANS, [BUBBLE_HTML, "<span>まずは無料で相談する</span>", "<span>資料請求はこちら</span>"])
 if not re.search(r'<p class="bubble"><span>[^<]*</span></p>\s*<div class="btn-row">\s*<a class="btn" href="contact.html">', S_PLANS): print("[NG] プランのCTA：吹き出しが主ボタンのすぐ上でない"); ok = False
 if S_PLANS.count("<a ") != 2 or S_PLANS.count('class="btn-row"') != 1: print("[NG] プランのセクションのボタンは CTAの行の2つ（主・従）だけのはず", S_PLANS.count("<a ")); ok = False
-if S_PLANS.count("こんな方におすすめ") != 3 or S_PLANS.count('class="k-label">担当すること<') != 3 or S_PLANS.count('class="k-label">料金<') != 3: print("[NG] ラベルの数（おすすめ3・担当3・料金3）"); ok = False
+if S_PLANS.count("こんな方におすすめ") != 3 or S_PLANS.count('class="k-label">担当すること<') != 2 or S_PLANS.count('class="k-label">対応できる施策<') != 1 or S_PLANS.count('class="k-label">料金<') != 3: print("[NG] ラベルの数（おすすめ3・担当2＋対応できる施策1・料金3）"); ok = False
 if S_PLANS.count('class="plan-card__tag"') != 1 or "いちばん人気" in S_PLANS: print("[NG] 「基本のプラン」タグが1つだけ・「いちばん人気」なしでない"); ok = False
 if S_PLANS.count("モニター") != 2: print("[NG] プランのセクションのモニター表示が 代行の料金＋CTAの吹き出し の2か所でない", S_PLANS.count("モニター")); ok = False
 gone("プラン", S_PLANS, ["?plan=", "このプランで相談する", "コースを見る", "#price-course", "plan-help", "どのプランが合うか", "迷ったら", "plans-note", "num-xl", "ひとりめ施策", "sec-lead", "掲載内容は事前にご相談", "現状の整理とゴール設定", "戦略シート", "実行計画", "週次レポート", "運用の手順書"])
@@ -469,7 +468,7 @@ gone("プラン", S_PLANS, ["?plan=", "このプランで相談する", "コー�
 # 4. 担当者
 need("担当者", S_ABOUT, [
     '<p class="sec-label">代表</p>', '<span class="mark">担当者</span>について', '<p class="role-tag"><span>元マーケティング責任者（BtoB）</span></p>',
-    '<p class="about__name">大萱生 隼人 <span class="about__reading"><span class="todo">【要記入：読み仮名】</span></span></p>',
+    '<p class="about__name">大萱生 隼人</p>', '<h3 class="works-title">経歴</h3>', 'ペット業界で人材・経営支援を行う事業会社（従業員約300名）に入社。法人営業を担当',
     '<p class="about__text">法人営業を経て、事業会社でBtoCとBtoBのマーケティングを担当してきました。社長直下でBtoBマーケティング部門を一人で立ち上げ、6名体制まで広げています。2026年に独立。</p>',
     '<h3 class="works-title">これまで取り組んできたこと</h3>',
     '<div class="ph ph--img ph--portrait ph--about">', 'src="img/profile.webp"', 'alt="大萱生 隼人の写真"',
@@ -479,14 +478,16 @@ WORKS_EXP = [("戦略と設計", "過去の受注データを分析して狙う�
              ("商談化と組織づくり", "インサイドセールスと連携して商談につなげる仕組みをつくり、マーケティング部門を1人から6名体制に育てました。")]
 works = [(TXT(a), TXT(b)) for a, b in re.findall(r"<li><strong>(.*?)</strong><span>(.*?)</span></li>", re.search(r'<ul class="check-list">.*?</ul>', S_ABOUT, re.S).group(0))]
 if works != WORKS_EXP: print("[NG] これまで取り組んできたこと（上流→下流の3つ。太字の見出し＋1文）", works); ok = False
-career = [TXT(x) for x in re.findall(r"<li(?: class=\"is-last\")?><span>(.*?)</span></li>", re.search(r'<ol class="career-flow">.*?</ol>', S_ABOUT, re.S).group(0))]
-if career != ["法人営業", "BtoCマーケティング", "BtoBマーケティング部門の立ち上げ", "独立"]: print("[NG] 経歴の流れ", career); ok = False
-if len(re.findall(r'<a class="btn btn--ghost" href="profile.html"><span>プロフィールを詳しく見る</span>', S_ABOUT)) != 1: print("[NG] プロフィールを詳しく見る（従ボタン）がない"); ok = False
+career = re.findall(r'<span class="career__when">(.*?)</span>', re.search(r'<ol class="career career--about">.*?</ol>', S_ABOUT, re.S).group(0))
+if career != ["2020年4月", "2021年4月", "2023年4月", "2026年"]: print("[NG] 担当者の経歴の年", career); ok = False
+for p_ in PAGES:
+    if "profile.html" in RAW[p_] or "読み仮名" in RAW[p_] or "about__reading" in RAW[p_]: print(f"[NG] {p_}: プロフィールのページへのリンクか読み仮名が残っている"); ok = False
+if os.path.exists(OUT + "profile.html"): print("[NG] profile.html が残っている"); ok = False
 gone("担当者", S_ABOUT, ['class="pills"', "stat-card", "about-stats", "stat-note", "部門の人数", "月間リード", "展示会の集客", "※事業会社在籍時の実績です", "マーケティング経験5年以上", "担当。社長直下", "6名体制まで広げました"])
 for g_ in ["24件", "206件", "4,000", "8.5倍"]:
     if g_ in TXT(S_ABOUT): print(f"[NG] 担当者に細かい数字「{g_}」が残っている"); ok = False
-pos = [S_ABOUT.find(x) for x in ['class="role-tag"', 'class="about__name"', 'class="about__text"', 'class="works-title"', 'class="check-list"', 'class="career-flow"', 'class="about__more"']]
-if pos != sorted(pos) or min(pos) < 0: print("[NG] 担当者の並びが「肩書き → 氏名 → 本文 → これまで取り組んできたこと → 経歴 → ボタン」でない", pos); ok = False
+pos = [S_ABOUT.find(x) for x in ['class="role-tag"', 'class="about__name"', 'class="about__text"', 'class="works-title"', 'class="check-list"', 'class="career career--about"']]
+if pos != sorted(pos) or min(pos) < 0: print("[NG] 担当者の並びが「肩書き → 氏名 → 本文 → これまで取り組んできたこと → 経歴」でない", pos); ok = False
 if S_ABOUT.find('class="about__photo') > S_ABOUT.find('class="about__body'): print("[NG] 写真が左（DOM の先）でない"); ok = False
 
 # 途中のCTA（担当者の後：白地の行。v12 のまま）
@@ -511,7 +512,7 @@ if 'href="#price' in idx or "#price" in "".join(RAW.values()): print("[NG] 「#p
 # 6'. FAQ（4問・閉じたアコーディオン）
 need("FAQ", S_FAQ, ['<p class="sec-label">ご質問</p>', 'よくある<span class="mark">ご質問</span>'])
 FAQ_EXP = [
-    ("契約期間と、途中解約について教えてください。", "ひとりめ代行プランとひとりめサポートプランは、最初の3か月を最低期間とし、4か月目以降は1か月ごとに更新できます。最初の3か月の途中での解約は、原則としてお受けしていません。スポットプランは、施策ごとのご契約です。"),
+    ("契約期間と、途中解約について教えてください。", "ひとりめ代行プランとひとりめサポートプランは、最初の3か月を最低期間とし、4か月目以降は1か月ごとに更新できます。最初の3か月の途中での解約は、原則としてお受けしていません。施策代行プランは、施策ごとのご契約です。"),
     ("社内にマーケティング担当者がいなくても進められますか？", "はい。担当者がいない状態からでも始められます。"),
     ("料金に含まれないものはありますか？", "広告費やツール代などの実費は含まれません。扱いはご相談のうえで決めます。"),
     ("具体的に相談したいことが決まっていなくても申し込んでいいですか？", "はい。現状をお聞きしながら一緒に整理します。"),
@@ -536,8 +537,7 @@ if not re.search(r'<p class="bubble"><span>[^<]*</span></p>\s*<div class="btn-ro
 
 # 全体
 gone("index 全体", idx_body, ["代表が直接", "担当者が途中で変わる", "60分・オンライン", "お見積りまで無料", "?plan=", "このプランで相談する", "コースを見る", "いちばん人気", "モニタープラン", "モニター募集中", "hero__monitor", "cta-row--band", "mon-tag", "class=\"monitor", "plans-note", "どれに当てはまるか", "section--navy", "svc-card", "svc-grid", 'class="cmp', "svc-close", "5名のチーム", "社長直下の一人目マーケター", "成果が出るまで", "リード数を約8.5倍", "展示会で約4,000名を集客", "stat-card", "ひとりめ施策", "迷ったら", "どのプランが合うか"])
-need("index 全体", idx_body, ["【要記入：読み仮名】"])
-if idx_body.count("【要記入") != 1: print("[NG] index の【要記入】は「読み仮名」の1つだけのはず", idx_body.count("【要記入")); ok = False
+if "【要記入" in idx_body: print("[NG] index に【要記入】が残っている"); ok = False
 if 'class="stat-grid' in idx or idx.count("stat-card") != 0: print("[NG] index に実績の数字のカードが残っている"); ok = False
 if len(re.findall(r'<details class="qa">', idx_body)) != 4: print("[NG] FAQ が4問でない"); ok = False
 if idx_body.count('class="pills"') != 1: print("[NG] ピルは FV の1か所だけのはず", idx_body.count('class="pills"')); ok = False
@@ -555,7 +555,7 @@ mon = {k: v.count("モニター") for k, v in {"FV": S_HERO, "特長": S_SVC, "�
 print("モニターの出現箇所:", mon)
 if mon != {"FV": 2, "特長": 0, "プラン": 2, "担当者": 0, "途中のCTA": 1, "流れ": 0, "FAQ": 0, "最後のCTA": 1}: print("[NG] モニターの表示が想定の箇所（FV・代行の料金とプランのCTA・途中・最後のCTA）だけになっていない"); ok = False
 if "モニター" in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head にモニターがある"); ok = False
-if "、スポットプラン" not in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head（description）のプラン名がスポットになっていない"); ok = False
+if "、施策代行プラン" not in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head（description）のプラン名がスポットになっていない"); ok = False
 
 
 # 写真（v10 と同じ：Unsplash の3枚＋代表のプレースホルダー）
@@ -566,7 +566,6 @@ for p_ in PAGES:
     if "写真プレースホルダー" in RAW[p_] or "<figcaption>" in RAW[p_] or "ph__subject" in RAW[p_]: print(f"[NG] {p_}: 写真のプレースホルダーが残っている"); ok = False
 for p_ in PAGES:
     if "1分" in RAW[p_]: print(f"[NG] {p_}: 「入力は1分」の文が残っている"); ok = False
-if pf.count('src="img/profile.webp"') != 1: print("[NG] profile: 代表の写真が入っていない"); ok = False
 for f_ in ["img/profile.webp", "img/profile-600.jpg"]:
     if not os.path.exists(OUT + f_): print(f"[NG] {f_} が出力にない"); ok = False
 UNS = [
@@ -604,7 +603,7 @@ ids_order = [i for i in re.findall(r'<section[^>]*? id="([^"]+)"', idx) if i in 
 print("index のセクション順:", ids_order)
 if ids_order != ["service", "plans", "about", "flow", "faq"]: print("[NG] セクションの順が想定と違う（料金は削除）"); ok = False
 # ナビ：ラベルと順（全ページ）。5項目。開閉するメニュー（トグル）は無い
-NAV_EXPECT = [("#service", "サービスの特長"), ("#plans", "プラン"), ("#flow", "ご支援の流れ"), ("#faq", "よくある質問"), ("profile.html", "プロフィール")]
+NAV_EXPECT = [("#service", "サービスの特長"), ("#plans", "プラン"), ("#about", "担当者"), ("#flow", "ご支援の流れ"), ("#faq", "よくある質問")]
 for page in PAGES:
     s_ = RAW[page]
     m = re.search(r'<nav class="site-nav".*?</nav>', s_, re.S)
@@ -624,7 +623,7 @@ for page in PAGES:
     ft = re.search(r'<footer class="site-footer">.*?</footer>', s_, re.S).group(0)
     pre_ = "" if page == "index.html" else "./"
     FT_EXPECT = [
-        ("サイト内", ["TOP", "サービスの特長", "プラン", "ご支援の流れ", "よくある質問", "プロフィール"]),
+        ("サイト内", ["TOP", "サービスの特長", "プラン", "担当者", "ご支援の流れ", "よくある質問"]),
         ("お問い合わせ", ["無料相談", "サービス資料のダウンロード", "その他のお問い合わせ（提携・取材など）"]),
     ]
     if 'class="logo logo--footer" href="./"' not in ft: print(f"[NG] {page}: フッターのロゴ（案G）がない"); ok = False
@@ -636,7 +635,7 @@ for page in PAGES:
         got = [TXT(x) for x in re.findall(r"<li><a [^>]*>(.*?)</a></li>", col_)]
         if got != labs_: print(f"[NG] {page}: フッター「{hd_}」の項目 {got}"); ok = False
     site_h = re.findall(r'<li><a href="([^"]+)">', cols[0]) if cols else []
-    if site_h != ["./", f"{pre_}#service", f"{pre_}#plans", f"{pre_}#flow", f"{pre_}#faq", "profile.html"]: print(f"[NG] {page}: フッター「サイト内」のリンク {site_h}"); ok = False
+    if site_h != ["./", f"{pre_}#service", f"{pre_}#plans", f"{pre_}#about", f"{pre_}#flow", f"{pre_}#faq"]: print(f"[NG] {page}: フッター「サイト内」のリンク {site_h}"); ok = False
     ct_h = re.findall(r'<li><a href="([^"]+)">', cols[1]) if len(cols) > 1 else []
     if ct_h != ["contact.html", "download.html", "contact.html#other"]: print(f"[NG] {page}: フッター「お問い合わせ」のリンク {ct_h}"); ok = False
     if not re.search(r'<div class="footer__bottom">\s*<a href="privacy.html">プライバシーポリシー</a>\s*<p class="copyright"><small>&copy; 2026 ひとりめマーケ</small></p>\s*</div>', ft): print(f"[NG] {page}: フッターの最下段（プライバシーポリシー／© 2026 ひとりめマーケ）"); ok = False
@@ -653,7 +652,7 @@ for page in PAGES:
 print("\n--- v13：contact／?plan= の廃止 ---")
 opts = re.search(r'<select id="cf-consult_type"[^>]*>(.*?)</select>', ct, re.S)
 opt_list = re.findall(r'<option value="([^"]+)">', opts.group(1)) if opts else []
-if opt_list != ["ひとりめ代行プラン", "ひとりめサポートプラン", "スポットプラン", "まだ決まっていない"]: print("[NG] contact の選択肢が指示書（3プラン＋まだ決まっていない）と違う", opt_list); ok = False
+if opt_list != ["ひとりめ代行プラン", "ひとりめサポートプラン", "施策代行プラン", "まだ決まっていない"]: print("[NG] contact の選択肢が指示書（3プラン＋まだ決まっていない）と違う", opt_list); ok = False
 CF = section(ct_body, r'<form class="lead-form" data-form="consult".*?</form>')
 need("contact のフォーム", CF, ['id="cf-company"', 'id="cf-firstname"', 'id="cf-email"', 'id="cf-phone"', 'id="cf-consult_type"', '<textarea id="cf-message" name="message"', 'name="privacy" type="checkbox" required', '<span>無料相談を申し込む</span>', '（設定前のため送信されません）'])
 if len(re.findall(r'<span class="req">必須</span>', CF)) != 5 or len(re.findall(r'<span class="opt">任意</span>', CF)) != 2: print("[NG] contact のフォーム：必須（会社名・お名前・メール・電話・同意）5／任意（電話・相談内容の選択・相談の内容）3"); ok = False
@@ -662,13 +661,19 @@ need("download のフォーム", DF, ['id="df-company"', 'id="df-firstname"', 'i
 if len(re.findall(r'<span class="req">必須</span>', DF)) != 5 or len(re.findall(r'<span class="opt">任意</span>', DF)) != 0: print("[NG] download のフォーム：必須5／任意0"); ok = False
 for p_ in PAGES:
     if re.search(r"Googleフォーム|GoogleフォームのURL|<iframe|form-frame\"?>\s*<!--", RAW[p_]) and p_ != "privacy.html": print(f"[NG] {p_}: Googleフォームの名残がある"); ok = False
-# forms.js：先頭に設定（空）、HubSpot Forms API、必須の検証
+# forms.js：先頭に設定（空）、Apps Script へ送る、必須の検証。HubSpot の名残がないこと
 FJS = open(OUT + "js/forms.js", encoding="utf-8").read()
-for n_ in ['var HUBSPOT_PORTAL_ID = "";', 'var HUBSPOT_FORM_DOWNLOAD = "";', 'var HUBSPOT_FORM_CONSULT = "";', "https://api.hsforms.com/submissions/v3/integration/submit/", '"Content-Type": "application/json"', "入力してください", "legalConsentOptions"]:
+for n_ in ['var FORM_ENDPOINT = "";', 'var BOOKING_URL = "";', "入力してください", "gv=true"]:
     if n_ not in FJS: print(f"[NG] forms.js に「{n_}」がない"); ok = False
+if re.search(r"HUBSPOT|hsforms|\"Content-Type\"", FJS): print("[NG] forms.js に HubSpot の名残か Content-Type の指定がある"); ok = False
+for p_ in ["index.html", "contact.html", "download.html"]:
+    if RAW[p_].count('name="website" type="text" tabindex="-1"') != RAW[p_].count('<form class="lead-form"'): print(f"[NG] {p_}: ロボット対策の見えない欄がフォームの数だけない"); ok = False
+GS = open(OUT + "gas/Code.gs", encoding="utf-8").read()
+for n_ in ["function doPost(", "function setup(", "function hourly(", "hayato.ogayu@gmail.com", "if (d.website)"]:
+    if n_ not in GS: print(f"[NG] gas/Code.gs に「{n_}」がない"); ok = False
 for p_ in ["index.html", "contact.html", "download.html"]:
     if 'src="js/forms.js" defer' not in RAW[p_]: print(f"[NG] {p_}: forms.js を読んでいない"); ok = False
-for p_ in ["profile.html", "privacy.html"]:
+for p_ in ["privacy.html"]:
     if "forms.js" in RAW[p_]: print(f"[NG] {p_}: フォームが無いのに forms.js を読んでいる"); ok = False
 for need_ in ["まだ決まっていない", "ご相談の内容",
               '<p class="step-note reveal">ご契約を前提とせず、まずはお気軽にお悩みをお聞かせください。</p>', "返信の目安：2営業日以内</p>", "<h3>日程を選ぶ</h3>", "送信後に表示されるカレンダーから、ご都合のよい日時をお選びいただけます。", "<h3>オンラインでご相談（60分）</h3>"]:
@@ -683,48 +688,10 @@ if opt_list[:3] != plan_heads: print("[NG] contact の選択肢の3つがプラ�
 for need_ in ["<p>フォームの送信後、1営業日以内にメールでお送りします。</p>", "<p class=\"mt-s\">資料をお送りした後に、こちらから営業のご連絡はいたしません。</p>", "形式：PDF</p>"]:
     if need_ not in dl: print(f"[NG] download: 「{need_}」がない"); ok = False
 if dl.count("ご支援の進め方") != 4: print("[NG] download: 「ご支援の進め方」は4か所のはず", dl.count("ご支援の進め方")); ok = False
-for need_ in ["大萱生 隼人（個人事業者）", "HubSpot, Inc.", "日程調整", "電話番号", "2026年11月9日 制定", "hayato.ogayu@gmail.com"]:
+for need_ in ["大萱生 隼人（個人事業者）", "Google LLC（米国）", "GitHub Pages", "日程調整", "電話番号", "2026年11月9日 制定", "hayato.ogayu@gmail.com"]:
     if need_ not in pv: print(f"[NG] privacy: 「{need_}」がない"); ok = False
-if "【要記入" in pv or "役職" in pv: print("[NG] privacy: 【要記入】か「役職」が残っている"); ok = False
+if "【要記入" in pv or "役職" in pv or "HubSpot" in pv: print("[NG] privacy: 【要記入】か「役職」が残っている"); ok = False
 
-# ---- profile（v11）
-print("\n--- v13：profile ---")
-need("profile", pf_body, [
-    "<h1 id=\"page-title\">プロフィール</h1>", '<p class="person__name">大萱生 隼人 <span class="about__reading"><span class="todo">【要記入：読み仮名】</span></span></p>',
-    '<p class="role-tag"><span>元マーケティング責任者（BtoB）</span></p>',
-    "<li>BtoBマーケ部門をゼロから構築</li>", "<li>戦略から施策の実行まで担当</li>",
-    '<h2 class="sec-title" id="career-title">経歴</h2>',
-    '<span class="career__when">2020年4月</span><span class="career__what">事業会社（ペット業界の人材・経営支援。従業員約300名）に入社。法人営業（1年）</span>',
-    '<span class="career__when">2021年4月</span><span class="career__what">同社でBtoCマーケティング（就職イベント・人材紹介の集客。予算設計から広告・CRMの運用まで）</span>',
-    '<span class="career__when">2023年4月</span><span class="career__what">社長直下でBtoBマーケティング部門を一人で立ち上げ、6名体制まで拡大（2024年8月 リーダー、2025年8月 マネージャー）。戦略から施策の実行、インサイドセールスとの連携まで担当</span>',
-    '<li class="is-last"><span class="career__when">2026年</span><span class="career__what">独立</span></li>',
-    '<h2 class="sec-title" id="results-title">これまで取り組んできたこと</h2>',
-    '<h2 class="sec-title" id="strengths-title">強み</h2>',
-    '<h2 class="sec-title" id="skills-title">得意領域</h2>',
-    "<li>BtoBマーケティング戦略</li>", "<li>Web広告（Google・Meta）</li>", "<li>イベント・展示会の集客</li>", "<li>MA・CRM（HubSpot・Salesforce）</li>", "<li>インサイドセールスとの連携</li>",
-    "法人営業を経て、事業会社でBtoCとBtoBのマーケティングを担当してきました。", "<span>資料請求はこちら</span>",
-])
-PF_ST = [(TXT(a), TXT(b)) for a, b in re.findall(r'<li class="card feat-card">.*?<h3>(.*?)</h3>\s*<p>(.*?)</p>', pf_body, re.S)]
-if PF_ST != [("ゼロからマーケティング部門を立ち上げ、売上に直結させる", "社長直下でBtoBマーケティング部門を一人で立ち上げ、戦略と目標の設計から始めて、6名体制まで広げました。"), ("自ら手を動かし、集客効率を改善し続ける", "戦略だけでなく、広告の入稿・運用やデータ分析まで自分で行い、集客の効率を改善してきました。"), ("営業出身ならではの、売上から逆算する視点", "キャリアの起点は法人営業です。リード数ではなく、売上につながるマーケティングの設計を重視しています。")]: print("[NG] profile の強み3つ", PF_ST); ok = False
-if re.findall(r'<span class="num-xl" aria-hidden="true">(\d+)</span>', pf_body) != ["01", "02", "03"]: print("[NG] profile の強みの番号が01〜03でない"); ok = False
-if [TXT(a) for a in re.findall(r'<h2 class="sec-title" id="([a-z-]+)-title">', pf_body)] != ["strengths", "results", "career", "skills", "cta"]: print("[NG] profile のセクション順が「強み → これまで取り組んできたこと → 経歴 → 得意領域 → CTA」でない"); ok = False
-PF_W = [(TXT(a), TXT(b)) for a, b in re.findall(r"<li><strong>(.*?)</strong><span>(.*?)</span></li>", re.search(r'<ul class="check-list check-list--wide">.*?</ul>', pf_body, re.S).group(0))]
-if PF_W != WORKS_EXP: print("[NG] profile のこれまで取り組んできたこと（index と同じ3つ）", PF_W); ok = False
-if "受注から逆算して施策を設計" in pf_body or "受注から逆算して施策を設計" in S_HERO: print("[NG] 3つ目のピルが残っている"); ok = False
-gone("profile", pf_body, ["料金", "マーケティング経験5年以上", "社長直下で部門を一人で立ち上げ</li>", "6名体制まで拡大</li>", "大事にしていること", "大事にしている", "【要記入：年", "【要記入：期間", "stat__period", "一人目マーケター", "5名のチーム", "新規のリード獲得"])
-if "stat-card" in pf_body or "stat-grid" in pf_body or "stat-note" in pf_body or 'class="check-list check-list--wide"' not in pf_body: print("[NG] profile：実績の数字のカードが残っている／チェックリストがない"); ok = False
-if len(re.findall(r"<li>", re.search(r'<ul class="check-list check-list--wide">.*?</ul>', pf_body, re.S).group(0))) != 3: print("[NG] profile のチェックリストが3つでない"); ok = False
-gone("profile 実績", pf_body, ["リード数を約8.5倍", "展示会で約4,000名を集客", "stat__", "（2回目）", "※事業会社在籍時の実績です"])
-if len(re.findall(r'<span class="career__when">', pf_body)) != 4: print("[NG] profile のタイムラインが4項目でない"); ok = False
-sk = re.search(r'<ul class="skill-tags.*?</ul>', pf_body, re.S)
-if not sk or len(re.findall(r"<li>", sk.group(0))) != 5: print("[NG] 得意領域のタグが5つでない"); ok = False
-if pf_body.count("【要記入") != 1: print("[NG] profile の【要記入】は「読み仮名」の1つだけのはず", pf_body.count("【要記入")); ok = False
-if pf.count('class="sec-label"') != 2: print("[NG] profile: 小ラベルは「プロフィール」「無料相談」の2つだけのはず", pf.count('class="sec-label"')); ok = False
-# 面の並び（profile）：白 → 薄 → 白 → 薄 → 紺
-seqp = re.findall(r'<(?:section|div) class="((?:section|cta-band|page-head)[^"]*)"', pf)
-orderp = " → ".join(tone(c) for c in seqp)
-print("profile の面の並び:", orderp)
-if orderp != "白 → 薄 → 白 → 薄 → 白 → 紺": print("[NG] profile の面の並びが想定と違う"); ok = False
 
 # ---- JS / CSS
 print("\n--- v13：JS / CSS ---")
