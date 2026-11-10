@@ -466,7 +466,7 @@ gone("プラン", S_PLANS, ["?plan=", "このプランで相談する", "コー�
 # 4. 担当者
 need("担当者", S_ABOUT, [
     '<p class="sec-label">代表</p>', '<span class="mark">担当者</span>について', '<p class="role-tag"><span>元マーケティング責任者（BtoB）</span></p>',
-    '<p class="about__name">大萱生 隼人</p>', '<div class="about__career">', 'ニッチ業界のBtoB企業で法人営業を経験したのち、マーケティングのキャリアへ。', 'マーケティング責任者として、戦略の立案から施策の実行までを担ってきました。', '2026年に独立し、',
+    '<p class="about__name">大萱生 隼人</p>', '<div class="about__career">', '私も、同じところから始めました。', '社長直下でBtoBマーケティング部門を一人で立ち上げました。', '2026年に独立した今、貴社にお約束するのは3つです。', '<ol class="promise-list">', '<div class="about__works reveal">',
     '<h3 class="works-title">これまで取り組んできたこと</h3>',
     '<div class="ph ph--img ph--portrait ph--about">', 'src="img/profile.webp"', 'alt="大萱生 隼人の写真"',
 ])
@@ -475,15 +475,15 @@ WORKS_EXP = [("戦略と設計", "過去の受注データを分析して狙う�
              ("商談化と組織づくり", "インサイドセールスと連携して商談につなげる仕組みをつくり、マーケティング部門を1人から6名体制に育てました。")]
 works = [(TXT(a), TXT(b)) for a, b in re.findall(r"<li><strong>(.*?)</strong><span>(.*?)</span></li>", re.search(r'<ul class="check-list">.*?</ul>', S_ABOUT, re.S).group(0))]
 if works != WORKS_EXP: print("[NG] これまで取り組んできたこと（上流→下流の3つ。太字の見出し＋1文）", works); ok = False
-career = re.findall(r'<p class="about__text">(.*?)</p>', re.search(r'<div class="about__career">.*?</div>', S_ABOUT, re.S).group(0))
-if len(career) != 3 or "career__when" in S_ABOUT: print("[NG] 担当者の経歴は文章3段落のはず", len(career)); ok = False
+career = re.findall(r'<li><span class="promise-list__num" aria-hidden="true">\d+</span><span>(.*?)</span></li>', S_ABOUT)
+if career != ["商談につながる施策に絞って、すぐに動き出すこと。", "戦略で終わらせず、実行までやりきること。", "私がいなくても回る体制を、社内に残すこと。"] or "career__when" in S_ABOUT: print("[NG] 担当者の3つのお約束", career); ok = False
 need("対応できる施策", S_SVC, ['<div class="scope reveal">', '一気通貫でご支援します', '<li>リスティング広告の運用</li>', '<li>Meta広告の運用</li>', '<li>共催ウェビナーの企画・運営</li>', '<li>ホワイトペーパー制作</li>', '<li>インサイドセールス</li>', '<li>MA・CRMの導入支援（HubSpotなど）</li>'])
 for p_ in PAGES:
     if "逆算" in RAW[p_] or "300名" in RAW[p_]: print(f"[NG] {p_}: 「逆算」か「300名」が残っている"); ok = False
 for p_ in PAGES:
     if "profile.html" in RAW[p_] or "読み仮名" in RAW[p_] or "about__reading" in RAW[p_]: print(f"[NG] {p_}: プロフィールのページへのリンクか読み仮名が残っている"); ok = False
 if os.path.exists(OUT + "profile.html"): print("[NG] profile.html が残っている"); ok = False
-gone("担当者", S_ABOUT, ['class="pills"', "stat-card", "about-stats", "stat-note", "部門の人数", "月間リード", "展示会の集客", "※事業会社在籍時の実績です", "マーケティング経験5年以上", "担当。社長直下", "6名体制まで広げました"])
+gone("担当者", S_ABOUT, ['class="pills"', "stat-card", "about-stats", "stat-note", "部門の人数", "月間リード", "※事業会社在籍時の実績です", "マーケティング経験5年以上", "担当。社長直下", "6名体制まで広げました"])
 for g_ in ["24件", "206件", "4,000", "8.5倍"]:
     if g_ in TXT(S_ABOUT): print(f"[NG] 担当者に細かい数字「{g_}」が残っている"); ok = False
 pos = [S_ABOUT.find(x) for x in ['class="role-tag"', 'class="about__name"', 'class="about__career"', 'class="works-title"', 'class="check-list"']]

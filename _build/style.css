@@ -951,3 +951,26 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 .scope__list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 18px; }
 .scope__list li { padding: 6px 14px; background: var(--bg-alt); border-radius: 999px; font-size: 14.5px; font-weight: 700; line-height: 1.5; color: var(--navy); }
 @media (min-width: 768px) { .scope { padding: 32px 40px; } .scope__list li { font-size: 15px; } }
+
+/* 担当者：左の列に写真と「これまで取り組んできたこと」、右の列に本文。スマホは 写真 → 本文 → 取り組み の順 */
+@media (min-width: 960px) {
+  .about { grid-template-areas: "photo body" "works body"; grid-template-rows: auto 1fr; row-gap: 24px; }
+  .about__photo { grid-area: photo; position: static; }
+  .about__body { grid-area: body; }
+  .about__works { grid-area: works; }
+}
+.about__works { min-width: 0; padding: 22px 20px; background: #fff; border: 2px solid var(--navy); border-radius: 16px; }
+.about__works .works-title { margin-top: 0; font-size: 16px; }
+.about__works .check-list { gap: 12px; margin-top: 12px; }
+.about__works .check-list li { padding-left: 34px; }
+.about__works .check-list li > strong { font-size: 15px; }
+.about__works .check-list li > span { font-size: 14px; line-height: 1.8; }
+/* 本文：冒頭の悩みは太字の紺。3つのお約束は番号つきの白いカード */
+.about__lead { margin-top: 16px; padding: 14px 18px; background: #fff; border-left: 5px solid var(--yellow); border-radius: 0 10px 10px 0; font-size: 16px; font-weight: 900; line-height: 1.9; color: var(--navy); }
+@media (min-width: 768px) { .about__lead { font-size: 17px; } }
+.about__career { gap: 14px; }
+.about__text--promise { font-weight: 900; color: var(--navy); }
+.promise-list { display: grid; gap: 10px; margin-top: 12px; }
+.promise-list li { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #fff; border-radius: 12px; font-size: 16px; font-weight: 700; line-height: 1.7; color: var(--navy); }
+.promise-list__num { flex: none; font-family: var(--font-num); font-style: italic; font-weight: 900; font-size: 18px; color: var(--navy); background: var(--yellow); border-radius: 999px; padding: 2px 10px; }
+@media (min-width: 768px) { .promise-list li { font-size: 17px; } }
