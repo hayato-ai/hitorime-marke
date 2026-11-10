@@ -70,6 +70,8 @@ FEATS = [
     ("手が足りなくても、|施策が回る", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。戦略だけでなく実行まで担当するので、社内の人手が足りなくても施策が止まりません。"),
     ("社内に、|ノウハウが残る", "マーケティング部門を1人から6名体制に育てた経験をもとに、進め方や判断の基準を手順書にして残します。担当者の採用や引き継ぎまで見据えて進めます。"),
 ]
+SCOPE = ["リスティング広告の運用", "Meta広告の運用", "共催ウェビナーの企画・運営", "ホワイトペーパー制作", "インサイドセールス", "MA・CRMの導入支援（HubSpotなど）"]
+scope_li = "\n".join(f"          <li>{x}</li>" for x in SCOPE)
 feat_cards = "\n".join(f'''        <li class="card feat-card">
           <span class="num-xl" aria-hidden="true">{i:02d}</span>
           <h3>{"".join(f'<span class="phrase">{x}</span>' for x in t.split("|"))}</h3>
@@ -80,12 +82,18 @@ h += f'''
   <section class="section section--alt" id="service" aria-labelledby="service-title">
     <div class="container">
       <div class="svc-intro">
-        {sec_head("サービスの特長", '<span class="phrase">元事業会社の</span><span class="phrase">マーケティング責任者だから</span><span class="phrase"><span class="mark">解決できる</span>、</span><span class="phrase">3つのこと</span>', "service-title")}
+        {sec_head("サービスの特長", '<span class="phrase">元事業会社の</span><span class="phrase">マーケティング</span><span class="phrase">責任者だから</span><span class="phrase"><span class="mark">解決できる</span>、</span><span class="phrase">3つのこと</span>', "service-title")}
         {unsplash(**IMG_SERVICE)}
       </div>
       <ol class="feat-grid reveal">
 {feat_cards}
       </ol>
+      <div class="scope reveal">
+        <p class="scope__title"><span class="phrase">戦略から施策の実行まで、</span><span class="phrase">一気通貫でご支援します</span></p>
+        <ul class="scope__list">
+{scope_li}
+        </ul>
+      </div>
     </div>
   </section>
 '''
@@ -122,7 +130,7 @@ PLANS = [
          does=["LP制作", "ホワイトペーパー・記事の制作", "営業資料・サービス資料の制作", "ウェビナーの企画・運営",
                "広告運用", "メール配信", "展示会・イベントの集客"],
          does_label="対応できる施策",
-         price='<p class="plan-price"><span class="plan-price__amt plan-price__amt--quote">お見積り</span></p>\n'
+         price='<p class="plan-price"><span class="plan-price__amt"><span class="big">10</span>万円〜<span class="plan-price__tax">（税別）</span></span></p>\n'
                '              <p class="plan-price__sub">施策ごと</p>'),
 ]
 plan_cards = []
@@ -162,8 +170,6 @@ for p in PLANS:
             </div>
           </div>
         </li>''')
-PLAN_NOTES = ["初期費用はかかりません。", "ひとりめ代行プランとひとりめサポートプランは、毎週ご報告します。", "広告費などの実費は含まれません。扱いはご相談のうえで決めます。"]
-plan_notes = "\n".join(f"        <li>{n}</li>" for n in PLAN_NOTES)
 h += f'''
   <!-- 3. プラン（#plans。背景：白。3つの名前つきプランを PC（1024px以上）で横に3枚、それ未満は1列。カードの下に注記（1行ずつ）、その下にCTAの行を1つ） -->
   <section class="section" id="plans" aria-labelledby="plans-title">
@@ -171,9 +177,6 @@ h += f'''
       {sec_head("プラン", 'ご依頼に合わせた<span class="mark">3つのプラン</span>', "plans-title")}
       <ul class="plan-grid reveal">
 {chr(10).join(plan_cards)}
-      </ul>
-      <ul class="plan-notes reveal">
-{plan_notes}
       </ul>
       <div class="plans-cta">
         {cta_set("cta-set--center")}

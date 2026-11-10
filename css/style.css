@@ -944,3 +944,10 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 /* FV：見出しの下の補足（誰が担当するか）。見出しは相手の課題、肩書きはここに下げる */
 .hero__sub { margin-top: 14px; font-size: 18px; font-weight: 700; line-height: 1.7; color: var(--navy); }
 @media (min-width: 768px) { .hero__sub { font-size: 20px; } }
+
+/* 特長の下：対応できる施策（一気通貫）。白い箱にタグを並べる */
+.scope { margin-top: 40px; padding: 28px 24px; background: #fff; border: 2px solid var(--navy); border-radius: 16px; text-align: center; }
+.scope__title { font-size: clamp(18px, 2.2vw, 22px); font-weight: 900; line-height: 1.5; color: var(--navy); }
+.scope__list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 18px; }
+.scope__list li { padding: 6px 14px; background: var(--bg-alt); border-radius: 999px; font-size: 14.5px; font-weight: 700; line-height: 1.5; color: var(--navy); }
+@media (min-width: 768px) { .scope { padding: 32px 40px; } .scope__list li { font-size: 15px; } }
