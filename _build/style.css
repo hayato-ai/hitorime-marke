@@ -974,3 +974,10 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 .promise-list li { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #fff; border-radius: 12px; font-size: 16px; font-weight: 700; line-height: 1.7; color: var(--navy); }
 .promise-list__num { flex: none; font-family: var(--font-num); font-style: italic; font-weight: 900; font-size: 18px; color: var(--navy); background: var(--yellow); border-radius: 999px; padding: 2px 10px; }
 @media (min-width: 768px) { .promise-list li { font-size: 17px; } }
+
+/* プラン名は1行に（HubSpot導入・活用プランが折れないよう少し小さく）。担当することは4項目に絞り、余白を広めに */
+.plan-card h3 { font-size: clamp(18px, 5.6vw, 23px); white-space: nowrap; }
+@media (min-width: 1024px) { .plan-card h3 { font-size: clamp(18px, 1.85vw, 22px); } }
+.plan-card .dot-list { gap: 6px; }
+/* 料金を「導入／運用」の2段で出すとき */
+.plan-price--split + .plan-price--split { margin-top: 4px; }

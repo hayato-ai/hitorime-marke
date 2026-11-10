@@ -107,8 +107,7 @@ PLANS = [
          lead="戦略から実行まで、丸ごと任せたい",
          who="マーケティングの担当者がいない企業様",
          lead_note="戦略だけでなく、実行まで担当します。",
-         does=["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・資料・メール・ウェビナー・展示会）",
-               "効果測定と改善", "営業への引き渡しの仕組みづくり"],
+         does=["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・ウェビナーなど）", "効果測定と改善"],
          price=(
              '<p class="plan-price plan-price--monitor">'
              '<span class="plan-price__old"><s>通常 月40万円</s></span> '
@@ -121,19 +120,17 @@ PLANS = [
          lead="リードを増やす施策を、任せたい",
          who="リードの数を増やしたい企業様",
          lead_note="設計から実行、振り返りまで担当します。",
-         does=["LP制作", "ホワイトペーパー・記事の制作", "営業資料・サービス資料の制作", "ウェビナーの企画・運営",
-               "広告運用", "メール配信", "展示会・イベントの集客"],
+         does=["LP・ホワイトペーパーの制作", "広告運用", "ウェビナー・展示会の企画と集客", "メール配信"],
          does_label="対応できる施策",
          price='<p class="plan-price"><span class="plan-price__amt"><span class="big">10</span>万円〜<span class="plan-price__tax">（税別）</span></span></p>\n'
                '              <p class="plan-price__sub">施策ごと</p>'),
-    dict(id=3, name="HubSpot|導入・活用プラン", tag=None,
+    dict(id=3, name="HubSpot導入・活用プラン", tag=None,
          lead="HubSpotを、使いこなしたい",
          who="HubSpotを導入したい、または使いこなせていない企業様",
          lead_note="導入から、社内で回る運用まで担当します。",
-         does=["導入の設計と初期設定", "顧客データの移行と整理", "フォーム・メール・ワークフローの設定",
-               "営業との運用ルールづくり", "ダッシュボード・レポートの作成", "社内向けの使い方レクチャー"],
-         price='<p class="plan-price"><span class="plan-price__amt plan-price__amt--quote">お見積り</span></p>\n'
-               '              <p class="plan-price__sub">内容に応じて</p>'),
+         does=["導入の設計と初期設定", "データの移行とフォーム・メールの設定", "営業との運用ルールづくり", "レポート作成と使い方のレクチャー"],
+         price='<p class="plan-price plan-price--split"><span class="plan-price__k">導入</span> <span class="plan-price__amt"><span class="big">10</span>万円〜</span></p>\n'
+               '              <p class="plan-price plan-price--split"><span class="plan-price__k">運用</span> <span class="plan-price__amt">月<span class="big">5</span>万円〜<span class="plan-price__tax">（税別）</span></span></p>'),
 ]
 plan_cards = []
 for p in PLANS:

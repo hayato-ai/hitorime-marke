@@ -432,11 +432,11 @@ for i, (c_, lead, who) in enumerate([
     for old_ in ["主な成果物", "chips", "plan-card__desc", "plan-card__keep", "コース<"]:
         if old_ in c_: print(f"[NG] プラン{i}：v12 の「{old_}」が残っている"); ok = False
     dlist = re.search(r'<ul class="dot-list[^"]*">.*?</ul>', c_, re.S)
-    if not dlist or not (5 <= len(re.findall(r"<li>", dlist.group(0))) <= 7): print(f"[NG] プラン{i}：担当すること（5〜7項目）"); ok = False
+    if not dlist or len(re.findall(r"<li>", dlist.group(0))) != 4: print(f"[NG] プラン{i}：担当すること（4項目）"); ok = False
 if '<span class="plan-card__tag">基本のプラン</span>' not in C1 or "plan-card__tag" in C2 or "plan-card__tag" in C3: print("[NG] 「基本のプラン」のタグは1枚目だけのはず"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・資料・メール・ウェビナー・展示会）", "効果測定と改善", "営業への引き渡しの仕組みづくり"]: print("[NG] 代行プランの担当すること"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・ウェビナーなど）", "効果測定と改善"]: print("[NG] 代行プランの担当すること"); ok = False
 if '<p class="plan-card__note">戦略だけでなく、実行まで担当します。</p>' not in C1: print("[NG] 代行プランに「実行まで担当」の補足がない"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["LP制作", "ホワイトペーパー・記事の制作", "営業資料・サービス資料の制作", "ウェビナーの企画・運営", "広告運用", "メール配信", "展示会・イベントの集客"]: print("[NG] リード獲得プランの対応できる施策"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["LP・ホワイトペーパーの制作", "広告運用", "ウェビナー・展示会の企画と集客", "メール配信"]: print("[NG] リード獲得プランの対応できる施策"); ok = False
 need("代行プランの料金", C1, [
     '<span class="plan-price__old"><s>通常 月40万円</s></span>',
     '<span class="plan-price__off">先着3社 10万円OFF</span>',
@@ -448,9 +448,9 @@ if TXT(re.search(r'<p class="plan-price plan-price--monitor">.*?</p>', C1, re.S)
 bottom = lambda c_: TXT(re.search(r'<div class="plan-card__bottom">.*?</div>\s*</div>', c_, re.S).group(0))
 if bottom(C1) != "料金 通常 月40万円 先着3社 10万円OFF モニター価格 月30万円（税別） 3か月〜 ※成果が出た場合に、事例として掲載させていただきます": print("[NG] 代行プランの料金と期間", bottom(C1)); ok = False
 if bottom(C2) != "料金 10万円〜（税別） 施策ごと": print("[NG] リード獲得プランの料金と期間", bottom(C2)); ok = False
-if bottom(C3) != "料金 お見積り 内容に応じて": print("[NG] HubSpotプランの料金と期間", bottom(C3)); ok = False
+if bottom(C3) != "料金 導入 10万円〜 運用 月5万円〜（税別）": print("[NG] HubSpotプランの料金", bottom(C3)); ok = False
 MEASURES = [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C3, re.S).group(0))]
-if MEASURES != ["導入の設計と初期設定", "顧客データの移行と整理", "フォーム・メール・ワークフローの設定", "営業との運用ルールづくり", "ダッシュボード・レポートの作成", "社内向けの使い方レクチャー"]: print("[NG] HubSpotプランの担当すること", MEASURES); ok = False
+if MEASURES != ["導入の設計と初期設定", "データの移行とフォーム・メールの設定", "営業との運用ルールづくり", "レポート作成と使い方のレクチャー"]: print("[NG] HubSpotプランの担当すること", MEASURES); ok = False
 # 注記（小さく、1行ずつ）→ CTAの行1つ
 if "plan-notes" in S_PLANS or "初期費用はかかりません" in S_PLANS: print("[NG] プランの下の注記が残っている"); ok = False
 pos = [S_PLANS.find(x) for x in ['class="plan-grid', 'class="plans-cta"', 'class="bubble"', 'class="btn-row"']]
