@@ -390,17 +390,18 @@ if S_HERO.count('class="bubble"') != 1 or S_HERO.count("モニター") != 1: pri
 need("特長", S_SVC, [
     '<p class="sec-label">サービスの特長</p>', 'id="service-title"', '<span class="mark">解決できる</span>', '<img ', 'class="svc-intro"',
 ])
-if TXT(re.search(r'<h2 class="sec-title" id="service-title">(.*?)</h2>', S_SVC, re.S).group(1)) != "元事業会社のマーケティング責任者だから解決できる、3つのこと": print("[NG] 特長の見出し"); ok = False
+if TXT(re.search(r'<h2 class="sec-title" id="service-title">(.*?)</h2>', S_SVC, re.S).group(1)) != "元事業会社のマーケティング責任者だから解決できる、4つのこと": print("[NG] 特長の見出し"); ok = False
 FEAT_EXP = [
     ("商談につながる施策に、絞れる", "BtoBマーケティングの責任者として、狙う顧客、KPI、予算の配分までを決めてきました。その経験をもとに、商談につながる施策を見極め、限られた予算と時間を集中させます。"),
     ("手が足りなくても、施策が回る", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。戦略だけでなく実行まで担当するので、社内の人手が足りなくても施策が止まりません。"),
     ("社内に、ノウハウが残る", "マーケティング部門を1人から6名体制に育てた経験をもとに、進め方や判断の基準を手順書にして残します。担当者の採用や引き継ぎまで見据えて進めます。"),
+    ("イベントで、商談をつくれる", "商談展示会や決裁者向けのカンファレンスを、ゼロから立ち上げてきました。誰を呼ぶかを決めて集め、当日の接点を商談にし、営業に渡すまで。場をつくるところから商談に変えるところまでを、一人で担えます。"),
 ]
 feats = [(TXT(a), TXT(b)) for a, b in re.findall(r'<li class="card feat-card">.*?<h3>(.*?)</h3>\s*<p>(.*?)</p>', S_SVC, re.S)]
 if feats != FEAT_EXP: print("[NG] 特長3つの見出し・本文が指示書と違う", feats); ok = False
 gone("特長", S_SVC, ["<table", "cmp", "svc-close", "sec-lead", "代表が直接", "担当者が途中で変わる", "3つの特長"])
-if len(re.findall(r'class="card feat-card"', S_SVC)) != 3: print("[NG] 特長が3つでない"); ok = False
-if [m for m in re.findall(r'<span class="num-xl" aria-hidden="true">(\d+)</span>', S_SVC)] != ["01", "02", "03"]: print("[NG] 特長の番号が01〜03でない"); ok = False
+if len(re.findall(r'class="card feat-card"', S_SVC)) != 4: print("[NG] 特長が4つでない"); ok = False
+if [m for m in re.findall(r'<span class="num-xl" aria-hidden="true">(\d+)</span>', S_SVC)] != ["01", "02", "03", "04"]: print("[NG] 特長の番号が01〜04でない"); ok = False
 
 # 3. プラン
 need("プラン", S_PLANS, ['<p class="sec-label">プラン</p>', 'ご依頼に合わせた<span class="mark">3つのプラン</span>'])
@@ -434,9 +435,9 @@ for i, (c_, lead, who) in enumerate([
     dlist = re.search(r'<ul class="dot-list[^"]*">.*?</ul>', c_, re.S)
     if not dlist or len(re.findall(r"<li>", dlist.group(0))) != 4: print(f"[NG] プラン{i}：担当すること（4項目）"); ok = False
 if '<span class="plan-card__tag">基本のプラン</span>' not in C1 or "plan-card__tag" in C2 or "plan-card__tag" in C3: print("[NG] 「基本のプラン」のタグは1枚目だけのはず"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・ウェビナーなど）", "効果測定と改善"]: print("[NG] 代行プランの担当すること"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・イベントなど）", "効果測定と改善"]: print("[NG] 代行プランの担当すること"); ok = False
 if '<p class="plan-card__note">戦略だけでなく、実行まで担当します。</p>' not in C1: print("[NG] 代行プランに「実行まで担当」の補足がない"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["LP・ホワイトペーパーの制作", "広告運用", "ウェビナー・展示会の企画と集客", "メール配信"]: print("[NG] リード獲得プランの対応できる施策"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["LP・ホワイトペーパーの制作", "広告運用", "セミナー・カンファレンスの企画から商談化まで", "メール配信"]: print("[NG] リード獲得プランの対応できる施策"); ok = False
 need("代行プランの料金", C1, [
     '<span class="plan-price__old"><s>通常 月40万円</s></span>',
     '<span class="plan-price__off">先着3社 10万円OFF</span>',
@@ -598,7 +599,7 @@ for tag, c, _ in seq:
     prev = n
 order = " → ".join(tone(c) for _, c, _ in seq)
 print("index の面の並び:", order)
-need("お悩み", idx_body, ['id="problems"', 'こんな<span class="mark">お悩み</span>はありませんか？', '<li>商談の数が足りない</li>', '<li>担当者はいるが、施策を動かしきれていない</li>', '貴社の「一人目のマーケター」として社内に入り', '<a href="#service">3つの特長を見る</a>'])
+need("お悩み", idx_body, ['id="problems"', 'こんな<span class="mark">お悩み</span>はありませんか？', '<li>商談の数が足りない</li>', '<li>担当者はいるが、施策を動かしきれていない</li>', '貴社の「一人目のマーケター」として社内に入り', '<a href="#service">4つの特長を見る</a>'])
 if order != "白 → 黄 → 薄 → 白 → 薄 → 白 → 白 → 白 → 紺": print("[NG] 面の並びが想定と違う"); ok = False
 ids_order = [i for i in re.findall(r'<section[^>]*? id="([^"]+)"', idx) if i in ("service", "plans", "about", "flow", "price", "faq")]
 print("index のセクション順:", ids_order)

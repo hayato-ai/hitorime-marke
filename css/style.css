@@ -981,3 +981,8 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 .plan-card .dot-list { gap: 6px; }
 /* 料金を「導入／運用」の2段で出すとき */
 .plan-price--split + .plan-price--split { margin-top: 4px; }
+
+/* 特長を4つに：768px以上は2×2。お悩みの答えの要約も4つなので、600px以上は2×2 */
+@media (min-width: 768px) { .feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; } }
+@media (min-width: 600px) { .problem-answer__points { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 768px) { .problem-answer__points { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 620px; } }

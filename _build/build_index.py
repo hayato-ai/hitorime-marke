@@ -57,8 +57,9 @@ h += f'''
           <li><span class="num">01</span>施策を絞れる</li>
           <li><span class="num">02</span>施策が回る</li>
           <li><span class="num">03</span>ノウハウが残る</li>
+          <li><span class="num">04</span>イベントで商談をつくれる</li>
         </ul>
-        <p class="problem-answer__more"><a href="#service">3つの特長を見る</a></p>
+        <p class="problem-answer__more"><a href="#service">4つの特長を見る</a></p>
       </div>
     </div>
   </section>
@@ -69,6 +70,7 @@ FEATS = [
     ("商談につながる施策に、|絞れる", "BtoBマーケティングの責任者として、狙う顧客、KPI、予算の配分までを決めてきました。その経験をもとに、商談につながる施策を見極め、限られた予算と時間を集中させます。"),
     ("手が足りなくても、|施策が回る", "広告の運用、LPや資料の制作、展示会の集客まで、事業会社で自ら手を動かしてきました。戦略だけでなく実行まで担当するので、社内の人手が足りなくても施策が止まりません。"),
     ("社内に、|ノウハウが残る", "マーケティング部門を1人から6名体制に育てた経験をもとに、進め方や判断の基準を手順書にして残します。担当者の採用や引き継ぎまで見据えて進めます。"),
+    ("イベントで、|商談をつくれる", "商談展示会や決裁者向けのカンファレンスを、ゼロから立ち上げてきました。誰を呼ぶかを決めて集め、当日の接点を商談にし、営業に渡すまで。場をつくるところから商談に変えるところまでを、一人で担えます。"),
 ]
 SCOPE = ["リスティング広告の運用", "Meta広告の運用", "共催ウェビナーの企画・運営", "ホワイトペーパー制作", "インサイドセールス", "MA・CRMの導入支援（HubSpotなど）"]
 scope_li = "\n".join(f"          <li>{x}</li>" for x in SCOPE)
@@ -82,7 +84,7 @@ h += f'''
   <section class="section section--alt" id="service" aria-labelledby="service-title">
     <div class="container">
       <div class="svc-intro">
-        {sec_head("サービスの特長", '<span class="phrase">元事業会社の</span><span class="phrase">マーケティング</span><span class="phrase">責任者だから</span><span class="phrase"><span class="mark">解決できる</span>、</span><span class="phrase">3つのこと</span>', "service-title")}
+        {sec_head("サービスの特長", '<span class="phrase">元事業会社の</span><span class="phrase">マーケティング</span><span class="phrase">責任者だから</span><span class="phrase"><span class="mark">解決できる</span>、</span><span class="phrase">4つのこと</span>', "service-title")}
         {unsplash(**IMG_SERVICE)}
       </div>
       <ol class="feat-grid reveal">
@@ -107,7 +109,7 @@ PLANS = [
          lead="戦略から実行まで、丸ごと任せたい",
          who="マーケティングの担当者がいない企業様",
          lead_note="戦略だけでなく、実行まで担当します。",
-         does=["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・ウェビナーなど）", "効果測定と改善"],
+         does=["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・イベントなど）", "効果測定と改善"],
          price=(
              '<p class="plan-price plan-price--monitor">'
              '<span class="plan-price__old"><s>通常 月40万円</s></span> '
@@ -120,7 +122,7 @@ PLANS = [
          lead="リードを増やす施策を、任せたい",
          who="リードの数を増やしたい企業様",
          lead_note="設計から実行、振り返りまで担当します。",
-         does=["LP・ホワイトペーパーの制作", "広告運用", "ウェビナー・展示会の企画と集客", "メール配信"],
+         does=["LP・ホワイトペーパーの制作", "広告運用", "セミナー・カンファレンスの企画から商談化まで", "メール配信"],
          does_label="対応できる施策",
          price='<p class="plan-price"><span class="plan-price__amt"><span class="big">10</span>万円〜<span class="plan-price__tax">（税別）</span></span></p>\n'
                '              <p class="plan-price__sub">施策ごと</p>'),
