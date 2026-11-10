@@ -60,7 +60,7 @@ try {
       if (e3) NG(tag, '直してもエラーが消えない');
       // 3. 設定が空：送信しない（fetch が呼ばれない）、注記が出る
       await cdp.ev(`window.__calls = []; window.fetch = (u, o) => { window.__calls.push({ u: String(u), b: o && o.body }); return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ok: true }) }); }; true`);
-      if (t.consult) await cdp.ev(`(() => { const f = ${R('form.lead-form')}; f.querySelector('[name=consult_type]').value = '施策代行プラン'; f.querySelector('[name=message]').value = '相談です'; })(); true`);
+      if (t.consult) await cdp.ev(`(() => { const f = ${R('form.lead-form')}; f.querySelector('[name=consult_type]').value = 'リード獲得プラン'; f.querySelector('[name=message]').value = '相談です'; })(); true`);
       await cdp.ev(`${R('[name=phone]')}.value = '03-1234-5678'; ${R('button[type=submit]')}.click(); true`);
       await sleep(250);
       const e4 = await cdp.ev(`(() => { const f = ${R('form.lead-form')}; const n = f.querySelector('.lead-form__note'); return { calls: window.__calls.length, note: !n.hidden, text: n.textContent.trim(), formShown: !f.hidden, done: !f.parentNode.querySelector('.lead-form__done').hidden }; })()`);
@@ -81,7 +81,7 @@ try {
         if (names !== exp) NG(tag, 'フィールド名', names);
         const fv = b;
         if (fv.firstname !== 'テスト 太郎' || fv.company !== 'テスト株式会社' || fv.email !== 'taro@example.com' || fv.phone !== '03-1234-5678') NG(tag, '値', JSON.stringify(fv));
-        if (t.consult && (fv.consult_type !== '施策代行プラン' || fv.message !== '相談です')) NG(tag, '相談の値', JSON.stringify(fv));
+        if (t.consult && (fv.consult_type !== 'リード獲得プラン' || fv.message !== '相談です')) NG(tag, '相談の値', JSON.stringify(fv));
         if (b.form !== t.kind || !b.page || b.website !== '') NG(tag, 'form／page／website', JSON.stringify(b));
       }
       if (!e5.formHidden || !e5.doneShown || !e5.doneText.startsWith(t.consult ? 'お申し込みありがとうございます。' : 'お申し込みありがとうございます。1営業日以内に、メールで資料をお送りします。')) NG(tag, '成功時の置き換え', JSON.stringify(e5));

@@ -349,7 +349,7 @@ def works_list(cls=""):
 
 # ---- FV の要点カード3つ（v14：白地・紺2px枠・角丸、横並び） ----
 # ---- 自前のフォーム（js/forms.js が検証して Google Apps Script（gas/Code.gs）に POST する。設定が空のときは送信せず注記を出す） ----
-CONSULT_OPTIONS = ["ひとりめ代行プラン", "ひとりめサポートプラン", "施策代行プラン", "まだ決まっていない"]
+CONSULT_OPTIONS = ["ひとりめ代行プラン", "リード獲得プラン", "HubSpot導入・活用プラン", "まだ決まっていない"]
 FORM_ERR = "入力してください"
 
 

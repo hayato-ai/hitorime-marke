@@ -405,7 +405,7 @@ if [m for m in re.findall(r'<span class="num-xl" aria-hidden="true">(\d+)</span>
 # 3. プラン
 need("プラン", S_PLANS, ['<p class="sec-label">プラン</p>', 'ご依頼に合わせた<span class="mark">3つのプラン</span>'])
 if len(re.findall(r'<li class="card plan-card', S_PLANS)) != 3: print("[NG] プランのカードが3枚でない"); ok = False
-PLAN_NAMES = ["ひとりめ代行プラン", "ひとりめサポートプラン", "施策代行プラン"]   # 「スポットプラン」から改名
+PLAN_NAMES = ["ひとりめ代行プラン", "リード獲得プラン", "HubSpot導入・活用プラン"]
 plan_heads = [TXT(m) for m in re.findall(r'<li class="card plan-card" id="plan-\d">.*?<h3>(.*?)</h3>', S_PLANS, re.S)]
 print("プランの名前:", plan_heads)
 if plan_heads != PLAN_NAMES: print("[NG] プラン名が指示書と違う"); ok = False
@@ -420,10 +420,10 @@ C1, C2, C3 = card(1), card(2), card(3)
 # 上から：（タグ）→ 名前 → ひとこと → こんな方におすすめ → 担当すること → 料金と期間
 for i, (c_, lead, who) in enumerate([
     (C1, "戦略から実行まで、丸ごと任せたい", "マーケティングの担当者がいない企業様"),
-    (C2, "社内の担当者を、支えてほしい", "担当者が1人いる（兼任を含む）企業様"),
-    (C3, "必要な施策だけ、頼みたい", "やりたい施策が決まっている企業様"),
+    (C2, "リードを増やす施策を、任せたい", "リードの数を増やしたい企業様"),
+    (C3, "HubSpotを、使いこなしたい", "HubSpotを導入したい、または使いこなせていない企業様"),
 ], 1):
-    dl_ = "対応できる施策" if i == 3 else "担当すること"
+    dl_ = "対応できる施策" if i == 2 else "担当すること"
     need(f"プラン{i}", c_, [f'<p class="plan-card__lead">{lead}</p>', f"<p>{who}</p>", "こんな方におすすめ", dl_, '<p class="k-label">料金</p>'])
     keys = ["<h3>", 'class="plan-card__lead"', "こんな方におすすめ", dl_, '<div class="plan-card__bottom">']
     pos = [c_.find(k) for k in keys]
@@ -436,7 +436,7 @@ for i, (c_, lead, who) in enumerate([
 if '<span class="plan-card__tag">基本のプラン</span>' not in C1 or "plan-card__tag" in C2 or "plan-card__tag" in C3: print("[NG] 「基本のプラン」のタグは1枚目だけのはず"); ok = False
 if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C1, re.S).group(0))] != ["目標・KPIの設計", "戦略と施策計画の策定", "施策の実行（広告・LP・資料・メール・ウェビナー・展示会）", "効果測定と改善", "営業への引き渡しの仕組みづくり"]: print("[NG] 代行プランの担当すること"); ok = False
 if '<p class="plan-card__note">戦略だけでなく、実行まで担当します。</p>' not in C1: print("[NG] 代行プランに「実行まで担当」の補足がない"); ok = False
-if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["目標・KPIの設計", "施策の優先順位づけ", "計画と制作物のレビュー", "毎週の定例とチャット相談", "担当者の育成"]: print("[NG] サポートプランの担当すること"); ok = False
+if [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C2, re.S).group(0))] != ["LP制作", "ホワイトペーパー・記事の制作", "営業資料・サービス資料の制作", "ウェビナーの企画・運営", "広告運用", "メール配信", "展示会・イベントの集客"]: print("[NG] リード獲得プランの対応できる施策"); ok = False
 need("代行プランの料金", C1, [
     '<span class="plan-price__old"><s>通常 月40万円</s></span>',
     '<span class="plan-price__off">先着3社 10万円OFF</span>',
@@ -447,10 +447,10 @@ need("代行プランの料金", C1, [
 if TXT(re.search(r'<p class="plan-price plan-price--monitor">.*?</p>', C1, re.S).group(0)) != "通常 月40万円 先着3社 10万円OFF モニター価格 月30万円（税別）": print("[NG] 代行プランの料金の文字", TXT(re.search(r'<p class="plan-price plan-price--monitor">.*?</p>', C1, re.S).group(0))); ok = False
 bottom = lambda c_: TXT(re.search(r'<div class="plan-card__bottom">.*?</div>\s*</div>', c_, re.S).group(0))
 if bottom(C1) != "料金 通常 月40万円 先着3社 10万円OFF モニター価格 月30万円（税別） 3か月〜 ※成果が出た場合に、事例として掲載させていただきます": print("[NG] 代行プランの料金と期間", bottom(C1)); ok = False
-if bottom(C2) != "料金 月15万円〜（税別） 3か月〜": print("[NG] サポートプランの料金と期間", bottom(C2)); ok = False
-if bottom(C3) != "料金 10万円〜（税別） 施策ごと": print("[NG] 施策代行プランの料金と期間", bottom(C3)); ok = False
+if bottom(C2) != "料金 10万円〜（税別） 施策ごと": print("[NG] リード獲得プランの料金と期間", bottom(C2)); ok = False
+if bottom(C3) != "料金 お見積り 内容に応じて": print("[NG] HubSpotプランの料金と期間", bottom(C3)); ok = False
 MEASURES = [TXT(x) for x in re.findall(r"<li>(.*?)</li>", re.search(r'<ul class="dot-list">.*?</ul>', C3, re.S).group(0))]
-if MEASURES != ["LP制作", "ホワイトペーパー・記事の制作", "営業資料・サービス資料の制作", "ウェビナーの企画・運営", "広告運用", "メール配信", "展示会・イベントの集客"]: print("[NG] 施策代行プランの対応できる施策", MEASURES); ok = False
+if MEASURES != ["導入の設計と初期設定", "顧客データの移行と整理", "フォーム・メール・ワークフローの設定", "営業との運用ルールづくり", "ダッシュボード・レポートの作成", "社内向けの使い方レクチャー"]: print("[NG] HubSpotプランの担当すること", MEASURES); ok = False
 # 注記（小さく、1行ずつ）→ CTAの行1つ
 if "plan-notes" in S_PLANS or "初期費用はかかりません" in S_PLANS: print("[NG] プランの下の注記が残っている"); ok = False
 pos = [S_PLANS.find(x) for x in ['class="plan-grid', 'class="plans-cta"', 'class="bubble"', 'class="btn-row"']]
@@ -499,7 +499,7 @@ if S_ROW.find('id="about"') != -1 or idx.find('id="about"') > idx.find('<section
 # 5. 流れ（v12 のまま）
 need("流れ", S_FLOW, [
     'ご相談から<span class="mark">支援開始</span>までの流れ', "オンライン（60分）", "ご状況に合うプラン、進め方、費用をご提案します。", "ここまで全て無料です", "ご相談から開始までの目安は1〜2週間です。",
-    "毎週の定例ミーティングで、実績・実施内容・次回の施策をご報告します。", "定期的な見直し", "実績を見ながら、施策と進め方を見直します。ひとりめ代行プランとひとりめサポートプランは、3か月目に継続するかどうかを一緒に判断します。",
+    "毎週の定例ミーティングで、実績・実施内容・次回の施策をご報告します。", "定期的な見直し", "実績を見ながら、施策と進め方を見直します。ひとりめ代行プランは、3か月目に継続するかどうかを一緒に判断します。",
     "実際のスケジュールは貴社の状況に合わせてご提示します。",
 ])
 if S_FLOW.count('<li class="card step') != 6: print("[NG] 流れのステップが6つでない"); ok = False
@@ -512,7 +512,7 @@ if 'href="#price' in idx or "#price" in "".join(RAW.values()): print("[NG] 「#p
 # 6'. FAQ（4問・閉じたアコーディオン）
 need("FAQ", S_FAQ, ['<p class="sec-label">ご質問</p>', 'よくある<span class="mark">ご質問</span>'])
 FAQ_EXP = [
-    ("契約期間と、途中解約について教えてください。", "ひとりめ代行プランとひとりめサポートプランは、最初の3か月を最低期間とし、4か月目以降は1か月ごとに更新できます。最初の3か月の途中での解約は、原則としてお受けしていません。施策代行プランは、施策ごとのご契約です。"),
+    ("契約期間と、途中解約について教えてください。", "ひとりめ代行プランは、最初の3か月を最低期間とし、4か月目以降は1か月ごとに更新できます。最初の3か月の途中での解約は、原則としてお受けしていません。リード獲得プランは施策ごと、HubSpot導入・活用プランは内容に応じてご契約いただけます。"),
     ("社内にマーケティング担当者がいなくても進められますか？", "はい。担当者がいない状態からでも始められます。"),
     ("料金に含まれないものはありますか？", "広告費やツール代などの実費は含まれません。扱いはご相談のうえで決めます。"),
     ("具体的に相談したいことが決まっていなくても申し込んでいいですか？", "はい。現状をお聞きしながら一緒に整理します。"),
@@ -555,7 +555,7 @@ mon = {k: v.count("モニター") for k, v in {"FV": S_HERO, "特長": S_SVC, "�
 print("モニターの出現箇所:", mon)
 if mon != {"FV": 1, "特長": 0, "プラン": 2, "担当者": 0, "途中のCTA": 1, "流れ": 0, "FAQ": 0, "最後のCTA": 1}: print("[NG] モニターの表示が想定の箇所（FV・代行の料金とプランのCTA・途中・最後のCTA）だけになっていない"); ok = False
 if "モニター" in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head にモニターがある"); ok = False
-if "、施策代行プランからお選びいただけます" not in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head（description）に3つのプランがない"); ok = False
+if "、HubSpot導入・活用プランからお選びいただけます" not in re.search(r"<head>.*?</head>", idx, re.S).group(0): print("[NG] head（description）に3つのプランがない"); ok = False
 
 
 # 写真（v10 と同じ：Unsplash の3枚＋代表のプレースホルダー）
@@ -653,7 +653,7 @@ for page in PAGES:
 print("\n--- v13：contact／?plan= の廃止 ---")
 opts = re.search(r'<select id="cf-consult_type"[^>]*>(.*?)</select>', ct, re.S)
 opt_list = re.findall(r'<option value="([^"]+)">', opts.group(1)) if opts else []
-if opt_list != ["ひとりめ代行プラン", "ひとりめサポートプラン", "施策代行プラン", "まだ決まっていない"]: print("[NG] contact の選択肢が指示書（3プラン＋まだ決まっていない）と違う", opt_list); ok = False
+if opt_list != ["ひとりめ代行プラン", "リード獲得プラン", "HubSpot導入・活用プラン", "まだ決まっていない"]: print("[NG] contact の選択肢が指示書（3プラン＋まだ決まっていない）と違う", opt_list); ok = False
 CF = section(ct_body, r'<form class="lead-form" data-form="consult".*?</form>')
 need("contact のフォーム", CF, ['id="cf-company"', 'id="cf-firstname"', 'id="cf-email"', 'id="cf-phone"', 'id="cf-consult_type"', '<textarea id="cf-message" name="message"', 'name="privacy" type="checkbox" required', '<span>無料相談を申し込む</span>', '（設定前のため送信されません）'])
 if len(re.findall(r'<span class="req">必須</span>', CF)) != 5 or len(re.findall(r'<span class="opt">任意</span>', CF)) != 2: print("[NG] contact のフォーム：必須（会社名・お名前・メール・電話・同意）5／任意（電話・相談内容の選択・相談の内容）3"); ok = False
