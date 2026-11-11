@@ -467,7 +467,7 @@ gone("プラン", S_PLANS, ["?plan=", "このプランで相談する", "コー�
 # 4. 担当者
 need("担当者", S_ABOUT, [
     '<p class="sec-label">代表</p>', '<span class="mark">担当者</span>について', '<p class="role-tag"><span>元マーケティング責任者（BtoB）</span></p>',
-    '<p class="about__name">大萱生 隼人</p>', '<div class="about__career">', '私も、同じところから始めました。', '社長直下でBtoBマーケティング部門を一人で立ち上げました。', '2026年に独立した今、貴社にお約束するのは3つです。', '<ol class="promise-list">', '<div class="about__works reveal">',
+    '<p class="about__name">大萱生 隼人</p>', '<div class="about__career">', '私も、同じところから始めました。', '社長直下でBtoBマーケティング部門を一人で立ち上げました。', '2026年に独立した今、貴社にお約束するのは3つです。', '私がいなくても回る体制を、社内に残すことです。', '<div class="about__works reveal">',
     '<h3 class="works-title">これまで取り組んできたこと</h3>',
     '<div class="ph ph--img ph--portrait ph--about">', 'src="img/profile.webp"', 'alt="大萱生 隼人の写真"',
 ])
@@ -476,8 +476,8 @@ WORKS_EXP = [("戦略と設計", "過去の受注データを分析して狙う�
              ("商談化と組織づくり", "インサイドセールスと連携して商談につなげる仕組みをつくり、マーケティング部門を1人から6名体制に育てました。")]
 works = [(TXT(a), TXT(b)) for a, b in re.findall(r"<li><strong>(.*?)</strong><span>(.*?)</span></li>", re.search(r'<ul class="check-list">.*?</ul>', S_ABOUT, re.S).group(0))]
 if works != WORKS_EXP: print("[NG] これまで取り組んできたこと（上流→下流の3つ。太字の見出し＋1文）", works); ok = False
-career = re.findall(r'<li><span class="promise-list__num" aria-hidden="true">\d+</span><span>(.*?)</span></li>', S_ABOUT)
-if career != ["商談につながる施策に絞って、すぐに動き出すこと。", "戦略で終わらせず、実行までやりきること。", "私がいなくても回る体制を、社内に残すこと。"] or "career__when" in S_ABOUT: print("[NG] 担当者の3つのお約束", career); ok = False
+career = re.findall(r'<p class="about__text">(.*?)</p>', re.search(r'<div class="about__career">.*?</div>', S_ABOUT, re.S).group(0))
+if len(career) != 2 or "promise-list" in S_ABOUT or "career__when" in S_ABOUT: print("[NG] 担当者の本文（経歴と約束の2段落、お約束は文章）", len(career)); ok = False
 need("対応できる施策", S_SVC, ['<div class="scope reveal">', '一気通貫でご支援します', '<li>リスティング広告の運用</li>', '<li>Meta広告の運用</li>', '<li>共催ウェビナーの企画・運営</li>', '<li>ホワイトペーパー制作</li>', '<li>インサイドセールス</li>', '<li>MA・CRMの導入支援（HubSpotなど）</li>'])
 for p_ in PAGES:
     if "逆算" in RAW[p_] or "300名" in RAW[p_]: print(f"[NG] {p_}: 「逆算」か「300名」が残っている"); ok = False

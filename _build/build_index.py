@@ -187,15 +187,14 @@ h += f'''
 '''
 
 # ---------- 4. 担当者（薄） ----------
-# 左の列に写真と「これまで取り組んできたこと」（白いカード）、右の列に「肩書き → 氏名 → 本文（悩み → 私も同じ → 経歴 → 3つのお約束）」。
-# スマホは 写真 → 本文 → これまで取り組んできたこと の順（grid の並べ替え）
+# 上の段：左に写真（本文と同じ高さに伸ばす）、右に「肩書き → 氏名 → 本文（悩み → 私も同じ → 経歴 → 3つのお約束）」。
+# 下の段：「これまで取り組んできたこと」を横長の白いカードで3列に
 ABOUT_LEAD = "マーケティングの担当者がいない。担当者はいても、手が回らない。何から始めればいいか分からない。<br>私も、同じところから始めました。"
 ABOUT_STORY = ("法人営業を経てマーケティングに移り、社長直下でBtoBマーケティング部門を一人で立ち上げました。"
                "戦略を描くだけでなく、広告の運用、LPや資料づくり、展示会の集客、インサイドセールスとの連携まで、"
                "すべて自分で動かしながら、部門を6名体制のチームにしてきました。")
-ABOUT_PROMISE_LEAD = "2026年に独立した今、貴社にお約束するのは3つです。"
-PROMISES = ["商談につながる施策に絞って、すぐに動き出すこと。", "戦略で終わらせず、実行までやりきること。", "私がいなくても回る体制を、社内に残すこと。"]
-promise_li = "\n".join(f'            <li><span class="promise-list__num" aria-hidden="true">{k:02d}</span><span>{t}</span></li>' for k, t in enumerate(PROMISES, 1))
+ABOUT_PROMISE = ("2026年に独立した今、貴社にお約束するのは3つです。商談につながる施策に絞って、すぐに動き出すこと。"
+                 "戦略で終わらせず、実行までやりきること。そして、私がいなくても回る体制を、社内に残すことです。")
 h += f'''
   <!-- 4. 担当者（背景：薄い青灰。左に写真と「これまで取り組んできたこと」、右に 肩書きのタグ・氏名・本文・3つのお約束） -->
   <section class="section section--alt" id="about" aria-labelledby="about-title">
@@ -211,11 +210,8 @@ h += f'''
           <div class="about__career">
             <p class="about__lead">{ABOUT_LEAD}</p>
             <p class="about__text">{ABOUT_STORY}</p>
-            <p class="about__text about__text--promise">{ABOUT_PROMISE_LEAD}</p>
+            <p class="about__text">{ABOUT_PROMISE}</p>
           </div>
-          <ol class="promise-list">
-{promise_li}
-          </ol>
         </div>
         <div class="about__works reveal">
           <h3 class="works-title">{WORKS_TITLE}</h3>
