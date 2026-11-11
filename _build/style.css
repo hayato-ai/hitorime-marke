@@ -986,3 +986,30 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
 @media (min-width: 768px) { .feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; } }
 @media (min-width: 600px) { .problem-answer__points { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 768px) { .problem-answer__points { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 620px; } }
+
+/* ===== 特長のカード（見直し）：番号は小さな黄のラベル「POINT 01」、見出しを大きく目立たせる ===== */
+.feat-card { display: flex; flex-direction: column; padding: 24px 22px 26px; }
+.feat-card .num-xl {
+  grid-row: auto; align-self: flex-start; padding: 3px 12px 2px; border-radius: 999px; background: var(--yellow);
+  font-size: 14px; line-height: 1.4; letter-spacing: 0.06em;
+}
+.feat-card .num-xl::before { content: "POINT "; font-style: normal; font-family: var(--font-num); letter-spacing: 0.08em; }
+.feat-card .num-xl::after { display: none; }
+.feat-card h3 { margin-top: 14px; font-size: clamp(20px, 2.1vw, 24px); line-height: 1.45; text-wrap: balance; }
+.feat-card h3 .phrase { display: inline-block; }
+.feat-card p { margin-top: 10px; font-size: 15.5px; line-height: 1.9; }
+@media (min-width: 768px) { .feat-card { padding: 30px 30px 32px; } .feat-card .num-xl { font-size: 15px; } .feat-card p { font-size: 16px; } }
+
+/* ===== 担当者（見直し）：箱を減らして、左端と余白をそろえる ===== */
+.about__lead { margin-top: 18px; padding: 0; background: none; border: 0; border-radius: 0; font-size: 17px; line-height: 1.9; }
+@media (min-width: 768px) { .about__lead { font-size: 18px; } }
+.about__career { gap: 16px; }
+.about__career .about__text { margin: 0; }
+.about__text--promise { margin-top: 8px !important; }
+.promise-list { gap: 0; margin-top: 12px; padding: 4px 20px; background: #fff; border-radius: 14px; }
+.promise-list li { gap: 14px; padding: 14px 0; background: none; border-radius: 0; border-top: 1px solid var(--line); }
+.promise-list li:first-child { border-top: 0; }
+.promise-list__num { background: none; padding: 0; font-size: 20px; color: var(--navy); }
+.promise-list__num::after { content: ""; display: inline-block; width: 1px; }
+.about__works { padding: 22px 22px 24px; border: 0; border-radius: 14px; }
+@media (min-width: 960px) { .about { row-gap: 20px; } }
